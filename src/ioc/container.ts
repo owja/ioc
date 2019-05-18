@@ -1,9 +1,10 @@
 interface IConfig<T> {
-    singleScope: boolean;
     tags: string[];
     object?: INewAble<T>;
     factory?: Factory<T>;
     value?: Value<T>;
+    cache?: T;
+    singleton: boolean;
 }
 
 interface IRegistry {
@@ -17,24 +18,41 @@ interface INewAble<T> {
 type Factory<T> = () => T;
 type Value<T> = T;
 
+class Options<T> {
+
+    constructor(
+        private _target: IConfig<T>
+    ) {};
+
+    inSingletonScope() {
+        this._target.singleton = true;
+    }
+}
+
 class Bind<T> {
 
     constructor(
         private _target: IConfig<T>
     ) {};
 
-    to(object: INewAble<T>): void {
+    to(object: INewAble<T>): Options<T> {
         this._target.object = object;
+        return new Options<T>(this._target);
     }
 
-    toFactory(factory: Factory<T>): void {
+    toFactory(factory: Factory<T>): Options<T> {
         this._target.factory = factory;
+        return new Options<T>(this._target);
     }
 
     toValue(value: Value<T>): void {
+        if (typeof value === "undefined") {
+            throw "cannot bind a value of type undefined";
+        }
         this._target.value = value;
     }
 }
+
 export class Container {
 
     private _registry: IRegistry = {};
@@ -63,11 +81,17 @@ export class Container {
             throw `nothing bound to ${type.toString()}`;
         }
 
-        const {object, factory, value} = this._registry[type.toString()];
+        const {object, factory, value, cache, singleton} = this._registry[type.toString()];
 
-        if (object) return new object();
-        if (factory) return factory();
-        if (value) return value;
+        const cacheItem = (item: T): T => {
+            if (singleton && typeof cache !== "undefined") return cache;
+            if (singleton) this._registry[type.toString()].cache = item;
+            return item
+        };
+
+        if (typeof object !== "undefined") return cacheItem(new object());
+        if (typeof factory !== "undefined") return cacheItem(factory());
+        if (typeof value !== "undefined") return value;
 
         throw `nothing is bound to ${type.toString()}`;
     }
@@ -88,11 +112,10 @@ export class Container {
         }
 
         this._registry[type.toString()] = {
-            singleScope: false,
+            singleton: false,
             tags: [],
         };
 
         return this._registry[type.toString()];
     }
-
 }

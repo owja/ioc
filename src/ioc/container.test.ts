@@ -11,20 +11,69 @@ describe("Container", () => {
     });
 
     test("can bind a factory", () => {
-        container.bind<string>(exampleSymbol).toFactory(() => "hello world");
-        expect(container.get<string>(exampleSymbol)).toBe("hello world");
+        let count = 1;
+        container.bind<string>(exampleSymbol).toFactory(() => `hello world ${count++}`);
+
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 2");
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 3");
+    });
+
+    test("can bind a factory in singleton scope", () => {
+        let count = 1;
+        container.bind<string>(exampleSymbol).toFactory(() => `hello world ${count++}`).inSingletonScope();
+
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
+        expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
     });
 
     test("can bind a constructable", () => {
-        interface IExampleConstructable {hello: string}
+        interface IExampleConstructable {hello(): string}
+        container.bind<IExampleConstructable>(exampleSymbol).to(class implements IExampleConstructable {
+            count: number = 1;
+            hello() { return `world ${this.count++}`}
+        });
 
-        container.bind<IExampleConstructable>(exampleSymbol).to(class implements IExampleConstructable {hello = "world";});
-        expect(container.get<IExampleConstructable>(exampleSymbol).hello).toBe("world");
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
+    });
+
+    test("can bind a constructable in singleton scope", () => {
+        interface IExampleConstructable {hello(): string}
+        container.bind<IExampleConstructable>(exampleSymbol).to(class implements IExampleConstructable {
+            count: number = 1;
+            hello() { return `world ${this.count++}`}
+        }).inSingletonScope();
+
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 2");
+        expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 3");
     });
 
     test("can bind a constant value", () => {
         container.bind<string>(exampleSymbol).toValue("constant world");
         expect(container.get<string>(exampleSymbol)).toBe("constant world");
+    });
+
+    test("can bind a constant value of zero", () => {
+        container.bind<number>(exampleSymbol).toValue(0);
+        expect(container.get<string>(exampleSymbol)).toBe(0);
+    });
+
+    test("can bind a negative constant value", () => {
+        container.bind<number>(exampleSymbol).toValue(-10);
+        expect(container.get<string>(exampleSymbol)).toBe(-10);
+    });
+
+    test("can bind a constant value of empty string", () => {
+        container.bind<string>(exampleSymbol).toValue("");
+        expect(container.get<string>(exampleSymbol)).toBe("");
+    });
+
+    test("can not bind a constant value of undefined", () => {
+        expect(() => container.bind<undefined>(exampleSymbol).toValue(undefined)).toThrow("cannot bind a value of type undefined");
     });
 
     test("can not bind to a symbol more than once", () => {
