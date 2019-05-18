@@ -84,7 +84,6 @@ export class Container {
 
     private _add<T>(type: Symbol): IConfig<T> {
         if (this._registry[type.toString()]) {
-            console.log(type);
             throw `object can only bound once: ${type.toString()}`;
         }
 
