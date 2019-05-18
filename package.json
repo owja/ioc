@@ -4,7 +4,9 @@
   "description": "",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
+  "source": "src/index.ts",
   "scripts": {
+    "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
     "example": "ts-node src/example/index.ts",
     "test": "jest"
   },
@@ -14,9 +16,13 @@
   "devDependencies": {
     "@types/jest": "^24.0.13",
     "jest": "^24.8.0",
+    "microbundle": "^0.11.0",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
+  },
+  "mangle": {
+    "regex": "^_"
   }
 }
