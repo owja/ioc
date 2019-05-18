@@ -12,14 +12,14 @@ It is currently work in progress and not jet released.
 
 ##### Step 1 - Install the OWJA! IoC library
 
-```
+```bash
 npm install --save-dev <unreleased>
 ``` 
 
 ##### Step 3 - Create symbols for your dependencies
 
 Create a folder ***ioc*** and add the new file ***ioc/types.ts***:
-```
+```ts
 export const TYPE = {
     "MyService" = Symbol.for("MyService"),
     "MyOtherService" = Symbol.for("MyOtherService"),
@@ -30,7 +30,7 @@ export const TYPE = {
 
 Next need a container to bind your dependencies to. Lets create the file ***ioc/container.ts***
 
-```
+```ts
 import {Container, inject} from <unreleased>;
 
 import {TYPE} from "./types";
@@ -50,7 +50,7 @@ export {container, TYPE, inject};
 
 Lets create a ***example.ts*** file in your source root:
  
-```
+```ts
 import {container, TYPE, inject} from "./ioc/container";
 import {IMyService} from "./service/my-service";
 
@@ -77,7 +77,7 @@ If you run this example you should see the content of your example services.
 You can snapshot and restore a container for unit testing. You can make multiple snapshots in a row,
 but that is not recommend.
 
-```
+```ts
 beforeEach(() => {
     container.snapshot();
 });
