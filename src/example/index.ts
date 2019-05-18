@@ -8,12 +8,6 @@ interface IWheel {
     pressure: number;
 }
 
-interface IWheel {
-    readonly radius: number;
-    readonly depth: number;
-    pressure: number;
-}
-
 interface ICar {
     wheels: [IWheel, IWheel, IWheel, IWheel];
     length: number;
