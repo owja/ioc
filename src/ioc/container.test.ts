@@ -32,6 +32,11 @@ describe("Container", () => {
         expect(() => container.bind(exampleSymbol)).toThrow("object can only bound once: Symbol(example)");
     });
 
+    test("can not get unbound dependency", () => {
+        container.bind(exampleSymbol);
+        expect(() => container.get<string>(exampleSymbol)).toThrow("nothing is bound to Symbol(example)");
+    });
+
     test("can rebind to a symbol", () => {
         container.bind<string>(exampleSymbol).toValue("hello world");
         expect(container.get(exampleSymbol)).toBe("hello world");
