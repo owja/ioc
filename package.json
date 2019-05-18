@@ -7,7 +7,7 @@
   "source": "src/index.ts",
   "scripts": {
     "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
-    "example": "ts-node src/example/index.ts",
+    "example": "ts-node --compiler-options \"{\\\"module\\\": \\\"commonjs\\\"}\" src/example/index.ts",
     "test": "jest",
     "lint": "eslint --ext .ts,.js ./"
   },
