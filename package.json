@@ -1,0 +1,22 @@
+{
+  "name": "@owja/ioc",
+  "version": "1.0.0-alpha.0",
+  "description": "",
+  "main": "dist/ioc.js",
+  "module": "dist/ioc.mjs",
+  "scripts": {
+    "example": "ts-node src/example/index.ts",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Hauke Broer",
+  "license": "CC-BY-4.0",
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "jest": "^24.8.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  }
+}
