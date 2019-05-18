@@ -67,7 +67,7 @@ export class Container {
     }
 
     remove(type: symbol): Container {
-        if (!this._registry[type.toString()]) {
+        if (typeof this._registry[type.toString()] === "undefined") {
             throw `${type.toString()} was never bound`;
         }
 
@@ -77,7 +77,7 @@ export class Container {
     }
 
     get<T = never>(type: symbol): T {
-        if (!this._registry[type.toString()]) {
+        if (typeof this._registry[type.toString()] === "undefined") {
             throw `nothing bound to ${type.toString()}`;
         }
 
@@ -86,7 +86,7 @@ export class Container {
         const cacheItem = (item: T): T => {
             if (singleton && typeof cache !== "undefined") return cache;
             if (singleton) this._registry[type.toString()].cache = item;
-            return item
+            return item;
         };
 
         if (typeof object !== "undefined") return cacheItem(new object());
@@ -107,7 +107,7 @@ export class Container {
     }
 
     private _add<T>(type: symbol): IConfig<T> {
-        if (this._registry[type.toString()]) {
+        if (typeof this._registry[type.toString()] === "object") {
             throw `object can only bound once: ${type.toString()}`;
         }
 
