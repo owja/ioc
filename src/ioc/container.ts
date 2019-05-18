@@ -6,12 +6,15 @@ interface IConfig<T> {
     value?: Value<T>;
 }
 
+interface IRegistry {
+    [type: string]: IConfig<any>;
+}
+
 interface INewAble<T> {
-    new(...args: any[]): T
+    new(...args: any[]): T;
 }
 
 type Factory<T> = () => T;
-
 type Value<T> = T;
 
 class Bind<T> {
@@ -32,23 +35,20 @@ class Bind<T> {
         this._target.value = value;
     }
 }
-
-type Registry =  {[type: string]: IConfig<any>};
-
 export class Container {
 
-    private _registry: Registry = {};
-    private _snapshots: Registry[] = [];
+    private _registry: IRegistry = {};
+    private _snapshots: IRegistry[] = [];
 
-    bind<T = never>(type: Symbol): Bind<T> {
+    bind<T = never>(type: symbol): Bind<T> {
         return new Bind<T>(this._add<T>(type));
     }
 
-    rebind<T = never>(type: Symbol): Bind<T> {
+    rebind<T = never>(type: symbol): Bind<T> {
         return this.remove(type).bind<T>(type);
     }
 
-    remove(type: Symbol): Container {
+    remove(type: symbol): Container {
         if (!this._registry[type.toString()]) {
             throw `${type.toString()} was never bound`;
         }
@@ -58,7 +58,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(type: Symbol): T {
+    get<T = never>(type: symbol): T {
         if (!this._registry[type.toString()]) {
             throw `nothing bound to ${type.toString()}`;
         }
@@ -82,7 +82,7 @@ export class Container {
         return this;
     }
 
-    private _add<T>(type: Symbol): IConfig<T> {
+    private _add<T>(type: symbol): IConfig<T> {
         if (this._registry[type.toString()]) {
             throw `object can only bound once: ${type.toString()}`;
         }

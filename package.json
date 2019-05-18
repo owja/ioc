@@ -8,13 +8,18 @@
   "scripts": {
     "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
     "example": "ts-node src/example/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint --ext .ts,.js ./"
   },
   "keywords": [],
   "author": "Hauke Broer",
   "license": "CC-BY-4.0",
   "devDependencies": {
     "@types/jest": "^24.0.13",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-jest": "^22.5.1",
     "jest": "^24.8.0",
     "microbundle": "^0.11.0",
     "reflect-metadata": "^0.1.13",

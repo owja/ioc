@@ -1,8 +1,8 @@
 import {Container} from "./container";
 
-export function inject<T>(type: Symbol, container: Container) {
+export function inject<T>(type: symbol, container: Container) {
 
-    return function(this: any, target: Object, property: string): void {
+    return function(this: any, target: object, property: string): void {
         const getter = () => {
             return container.get<T>(type);
         };
