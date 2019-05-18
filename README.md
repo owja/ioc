@@ -1,19 +1,20 @@
 # OWJA! IoC
 
-[![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
+[![npm version](https://img.shields.io/npm/v/@owja/ioc.svg)](https://badge.fury.io/js/%40owja%2Fioc)
 [![codecov](https://codecov.io/gh/owja/ioc/branch/master/graph/badge.svg)](https://codecov.io/gh/owja/ioc)
+[![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs?compression=gzip)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
+[![size](https://badgen.net/packagephobia/install/@owja/ioc)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
 It is currently work in progress and not jet released.
 
 ### Usage
 
-> No package delivered jet!
-
 ##### Step 1 - Install the OWJA! IoC library
 
 ```bash
-npm install --save-dev <unreleased>
+npm install --save-dev @owja/ioc
 ``` 
 
 ##### Step 3 - Create symbols for your dependencies
@@ -31,7 +32,7 @@ export const TYPE = {
 Next need a container to bind your dependencies to. Lets create the file ***ioc/container.ts***
 
 ```ts
-import {Container, inject} from <unreleased>;
+import {Container, inject} from "@owja/ioc";
 
 import {TYPE} from "./types";
 
@@ -86,9 +87,9 @@ afterEach(() => {
     container.restore();
 }
 
-test("can snapshot and restore the registry", () => {
+test("can do something", () => {
     container.rebind<MyServiceMock>(TYPE.MySerice).to(MyServiceMock);
-    // ...
+    const mock = container.get<MyServiceMock>(TYPE.MySerice);
 });
 ```
 

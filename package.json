@@ -1,19 +1,30 @@
 {
   "name": "@owja/ioc",
   "version": "1.0.0-alpha.0",
-  "description": "",
+  "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
   "source": "src/index.ts",
+  "keywords": [
+    "typescript",
+    "dependency injection",
+    "dependency inversion",
+    "inversion of control",
+    "ioc",
+    "di"
+  ],
   "scripts": {
     "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
-    "example": "ts-node --compiler-options \"{\\\"module\\\": \\\"commonjs\\\"}\" src/example/index.ts",
     "test": "jest",
     "lint": "eslint --ext .ts,.js ./"
   },
-  "keywords": [],
-  "author": "Hauke Broer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owja/ioc.git"
+  },
+  "author": "Hauke Broer <info@owja.de>",
   "license": "CC-BY-4.0",
+  "homepage": "https://github.com/owja/ioc",
   "devDependencies": {
     "@types/jest": "^24.0.13",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
@@ -29,5 +40,9 @@
   },
   "mangle": {
     "regex": "^_"
-  }
+  },
+  "files": [
+    "/src",
+    "/dist"
+  ]
 }
