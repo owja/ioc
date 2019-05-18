@@ -17,3 +17,7 @@ before_script:
 
 script:
     - npm test
+
+after_script:
+    - npm install -g codecov
+    - codecov
