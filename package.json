@@ -16,7 +16,8 @@
   "scripts": {
     "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
     "test": "jest",
-    "lint": "eslint --ext .ts,.js ./"
+    "lint": "eslint --ext .ts,.js ./",
+    "release": "npm run build && npm run lint && npm run test && npm run lint && npm login && git tag $npm_package_version && git push --tags && npm publish --access public"
   },
   "repository": {
     "type": "git",
