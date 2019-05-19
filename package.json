@@ -1,10 +1,11 @@
 {
   "name": "@owja/ioc",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
   "source": "src/index.ts",
+  "types": "dist/index.d.ts",
   "keywords": [
     "typescript",
     "dependency injection",
@@ -14,7 +15,7 @@
     "di"
   ],
   "scripts": {
-    "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (rm dist/*.d.ts || true) && (rm -r dist/ioc || true) && (rm -r dist/example || true)",
+    "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (find ./dist -name '*.test.d.ts' -type f -delete || true)",
     "test": "jest",
     "lint": "eslint --ext .ts,.js ./",
     "release": "npm run build && npm run lint && npm run test && npm run lint && npm login && git tag $npm_package_version && git push --tags && npm publish --access public"
@@ -43,7 +44,6 @@
     "regex": "^_"
   },
   "files": [
-    "/src",
     "/dist"
   ]
 }

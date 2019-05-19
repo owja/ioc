@@ -17,5 +17,8 @@
 
     "removeComments": false,
     "noEmitHelpers": false
-  }
+  },
+  "include": [
+    "src"
+  ]
 }
