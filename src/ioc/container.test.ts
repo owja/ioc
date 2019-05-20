@@ -1,13 +1,12 @@
 import {Container} from "./container";
 
 describe("Container", () => {
-
     let container: Container;
 
     const exampleSymbol = Symbol.for("example");
 
     beforeEach(() => {
-        container = new Container()
+        container = new Container();
     });
 
     test("can bind a factory", () => {
@@ -21,7 +20,10 @@ describe("Container", () => {
 
     test("can bind a factory in singleton scope", () => {
         let count = 1;
-        container.bind<string>(exampleSymbol).toFactory(() => `hello world ${count++}`).inSingletonScope();
+        container
+            .bind<string>(exampleSymbol)
+            .toFactory(() => `hello world ${count++}`)
+            .inSingletonScope();
 
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
@@ -29,11 +31,17 @@ describe("Container", () => {
     });
 
     test("can bind a constructable", () => {
-        interface IExampleConstructable {hello(): string}
-        container.bind<IExampleConstructable>(exampleSymbol).to(class implements IExampleConstructable {
-            count: number = 1;
-            hello() { return `world ${this.count++}`}
-        });
+        interface IExampleConstructable {
+            hello(): string;
+        }
+        container.bind<IExampleConstructable>(exampleSymbol).to(
+            class implements IExampleConstructable {
+                count: number = 1;
+                hello() {
+                    return `world ${this.count++}`;
+                }
+            },
+        );
 
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
@@ -41,11 +49,20 @@ describe("Container", () => {
     });
 
     test("can bind a constructable in singleton scope", () => {
-        interface IExampleConstructable {hello(): string}
-        container.bind<IExampleConstructable>(exampleSymbol).to(class implements IExampleConstructable {
-            count: number = 1;
-            hello() { return `world ${this.count++}`}
-        }).inSingletonScope();
+        interface IExampleConstructable {
+            hello(): string;
+        }
+        container
+            .bind<IExampleConstructable>(exampleSymbol)
+            .to(
+                class implements IExampleConstructable {
+                    count: number = 1;
+                    hello() {
+                        return `world ${this.count++}`;
+                    }
+                },
+            )
+            .inSingletonScope();
 
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 2");
@@ -73,7 +90,9 @@ describe("Container", () => {
     });
 
     test("can not bind a constant value of undefined", () => {
-        expect(() => container.bind<undefined>(exampleSymbol).toValue(undefined)).toThrow("cannot bind a value of type undefined");
+        expect(() => container.bind<undefined>(exampleSymbol).toValue(undefined)).toThrow(
+            "cannot bind a value of type undefined",
+        );
     });
 
     test("can not bind to a symbol more than once", () => {
@@ -134,5 +153,4 @@ describe("Container", () => {
         container.restore();
         expect(container.get(exampleSymbol)).toBe("hello world");
     });
-
 });

@@ -16,15 +16,15 @@ interface ICircular {
 }
 
 const TYPE = {
-    "parent": Symbol.for("parent"),
-    "child1": Symbol.for("child1"),
-    "child2": Symbol.for("child2"),
-    "child3": Symbol.for("child3"),
-    "child4": Symbol.for("child4"),
-    "circular1": Symbol.for("circular1"),
-    "circular2": Symbol.for("circular2"),
-    "circularFail1": Symbol.for("circularFail1"),
-    "circularFail2": Symbol.for("circularFail2"),
+    parent: Symbol.for("parent"),
+    child1: Symbol.for("child1"),
+    child2: Symbol.for("child2"),
+    child3: Symbol.for("child3"),
+    child4: Symbol.for("child4"),
+    circular1: Symbol.for("circular1"),
+    circular2: Symbol.for("circular2"),
+    circularFail1: Symbol.for("circularFail1"),
+    circularFail2: Symbol.for("circularFail2"),
 };
 
 class Parent implements ITestClass {
@@ -108,7 +108,6 @@ container.bind<ICircular>(TYPE.circular1).toFactory(() => new Circular1("one"));
 container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 
 describe("Injector", () => {
-
     let instance: Parent;
 
     beforeEach(() => {
@@ -142,5 +141,4 @@ describe("Injector", () => {
     test("can not inject a circular dependency when accessing the dependency inside of constructor", () => {
         expect(() => container.get<ICircular>(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
     });
-
 });

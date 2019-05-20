@@ -13,6 +13,7 @@ before_script:
 
 script:
     - npm run lint
+    - npm run prettier
     - npm test
     - npm run build
 

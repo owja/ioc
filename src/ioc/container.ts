@@ -12,17 +12,14 @@ interface IRegistry {
 }
 
 interface INewAble<T> {
-    new(...args: any[]): T;
+    new (...args: any[]): T;
 }
 
 type Factory<T> = () => T;
 type Value<T> = T;
 
 class Options<T> {
-
-    constructor(
-        private _target: IConfig<T>
-    ) {};
+    constructor(private _target: IConfig<T>) {}
 
     inSingletonScope() {
         this._target.singleton = true;
@@ -30,10 +27,7 @@ class Options<T> {
 }
 
 class Bind<T> {
-
-    constructor(
-        private _target: IConfig<T>
-    ) {};
+    constructor(private _target: IConfig<T>) {}
 
     to(object: INewAble<T>): Options<T> {
         this._target.object = object;
@@ -54,7 +48,6 @@ class Bind<T> {
 }
 
 export class Container {
-
     private _registry: IRegistry = {};
     private _snapshots: IRegistry[] = [];
 
