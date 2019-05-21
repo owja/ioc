@@ -18,7 +18,7 @@ The API can change until 1.0.0 stable release.
 npm install --save-dev @owja/ioc
 ``` 
 
-##### Step 3 - Create symbols for your dependencies
+##### Step 3 - Create symbols for our dependencies
 
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
