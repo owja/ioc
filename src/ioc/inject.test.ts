@@ -1,7 +1,8 @@
 import {Container} from "./container";
-import {inject} from "./inject";
+import {createDecorator} from "./inject";
 
 const container = new Container();
+const inject = createDecorator(container);
 
 interface ITestClass {
     name: string;
@@ -29,31 +30,31 @@ const TYPE = {
 
 class Parent implements ITestClass {
     name = "parent";
-    @inject(TYPE.child1, container)
+    @inject(TYPE.child1)
     childOne!: ITestClass;
-    @inject(TYPE.child2, container)
+    @inject(TYPE.child2)
     childTwo!: ITestClass;
 }
 
 class ChildOne implements ITestClass {
     name = "child one";
-    @inject(TYPE.child2, container)
+    @inject(TYPE.child2)
     childOne!: ITestClass;
-    @inject(TYPE.child3, container)
+    @inject(TYPE.child3)
     childTwo!: ITestClass;
 }
 
 class ChildTwo implements ITestClass {
     name = "child two";
-    @inject(TYPE.child1, container)
+    @inject(TYPE.child1)
     childOne!: ITestClass;
 }
 
 class ChildThree implements ITestClass {
     name = "child three";
-    @inject(TYPE.child4, container)
+    @inject(TYPE.child4)
     childOne!: ITestClass;
-    @inject(TYPE.parent, container)
+    @inject(TYPE.parent)
     childTwo!: ITestClass;
 }
 
@@ -62,7 +63,7 @@ class ChildFour implements ITestClass {
 }
 
 class Circular1 implements ICircular {
-    @inject(TYPE.circular2, container)
+    @inject(TYPE.circular2)
     circular!: ICircular;
     get circularName(): string {
         return this.circular.name;
@@ -71,7 +72,7 @@ class Circular1 implements ICircular {
 }
 
 class Circular2 implements ICircular {
-    @inject(TYPE.circular1, container)
+    @inject(TYPE.circular1)
     circular!: ICircular;
     get circularName(): string {
         return this.circular.name;
@@ -80,7 +81,7 @@ class Circular2 implements ICircular {
 }
 
 class CircularFail1 implements ICircular {
-    @inject(TYPE.circularFail2, container)
+    @inject(TYPE.circularFail2)
     circular!: ICircular;
     circularName: string = "";
     constructor(public name: string) {
@@ -89,7 +90,7 @@ class CircularFail1 implements ICircular {
 }
 
 class CircularFail2 implements ICircular {
-    @inject(TYPE.circularFail1, container)
+    @inject(TYPE.circularFail1)
     circular!: ICircular;
     circularName: string = "";
     constructor(public name: string) {

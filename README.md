@@ -7,11 +7,12 @@
 [![size](https://badgen.net/packagephobia/install/@owja/ioc)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
-It is currently work in progress and not jet released.
+It is currently work in progress and in unstable alpha phase.
+The API can change until 1.0.0 stable release.
 
 ### Usage
 
-##### Step 1 - Install the OWJA! IoC library
+##### Step 1 - Installing the OWJA! IoC library
 
 ```bash
 npm install --save-dev @owja/ioc
@@ -19,7 +20,7 @@ npm install --save-dev @owja/ioc
 
 ##### Step 3 - Create symbols for your dependencies
 
-Create a folder ***ioc*** and add the new file ***ioc/types.ts***:
+Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
 export const TYPE = {
     "MyService" = Symbol.for("MyService"),
@@ -27,12 +28,12 @@ export const TYPE = {
 };
 ```
 
-##### Step 2 - Create a container
+##### Step 2 - Creating a container
 
-Next need a container to bind your dependencies to. Lets create the file ***ioc/container.ts***
+Next we need a container to bind our dependencies to. Let's create the file ***services/container.ts***
 
 ```ts
-import {Container, inject} from "@owja/ioc";
+import {Container, createDecorator} from "@owja/ioc";
 
 import {TYPE} from "./types";
 
@@ -40,6 +41,7 @@ import {IMyService, MyService} from "./service/my-service";
 import {IMyOtherService, MyOtherService} from "./service/my-other-service";
 
 const container = new Container();
+const inject = createDecorator(container);
 
 container.bind<IMyService>(TYPE.MyService).to(MyService);
 container.bind<IMyOtherService>(TYPE.MyOtherService).to(MyOtherService);
@@ -47,22 +49,20 @@ container.bind<IMyOtherService>(TYPE.MyOtherService).to(MyOtherService);
 export {container, TYPE, inject};
 ```
 
-##### Step 3 - Inject your dependency
+##### Step 3 - Injecting dependencies
 
-Lets create a ***example.ts*** file in your source root:
+Lets create a ***example.ts*** file in our source root:
  
 ```ts
-import {container, TYPE, inject} from "./ioc/container";
+import {container, TYPE, inject} from "./services/container";
 import {IMyService} from "./service/my-service";
 
 class Example {
-    
     @inject(TYPE.MyService)
     readonly myService!: IMyService;
     
     @inject(TYPE.MyOtherSerice)
     readonly myOtherService!: IMyOtherService;
-    
 }
 
 const example = new Example();
@@ -71,12 +71,12 @@ console.log(example.myService);
 console.log(example.myOtherSerice);
 ```
 
-If you run this example you should see the content of your example services.
+If we run this example we should see the content of our example services.
 
 ### Unit testing with IoC
 
-You can snapshot and restore a container for unit testing. You can make multiple snapshots in a row,
-but that is not recommend.
+We can snapshot and restore a container for unit testing.
+We are able to make multiple snapshots in a row too.
 
 ```ts
 beforeEach(() => {
@@ -95,17 +95,18 @@ test("can do something", () => {
 
 ### Development
 
-I am working on the first release. Current state can you see in the
-[Github Project](https://github.com/owja/ioc/projects/1).
+We are working on the first stable release. Current state of development can be seen in our
+[Github Project](https://github.com/owja/ioc/projects/1) for the first release.
 
 ### Inspiration
 
 This library is highly inspired by [InversifyJS](https://github.com/inversify/InversifyJS)
 but has other goals:
 
-1. I want to make a very lightweight solution
-2. I want implement less features to be more straight forward
+1. Make the library very lightweight (less than one kilobyte)
+2. Implementing less features to make the API more straight forward
 3. Always lazy inject the dependencies
+4. No meta-reflect required
 
 ### License
 

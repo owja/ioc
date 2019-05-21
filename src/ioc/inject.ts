@@ -1,10 +1,16 @@
 import {Container} from "./container";
 
-export function inject<T>(type: symbol, container: Container) {
-    return function(this: any, target: object, property: string): void {
+function inject(type: symbol, container: Container) {
+    return function(target: object, property: string): void {
         Object.defineProperty(target, property, {
-            get: () => container.get<T>(type),
+            get: () => container.get<any>(type),
             enumerable: true,
         });
+    };
+}
+
+export function createDecorator(container: Container) {
+    return function(type: symbol) {
+        return inject(type, container);
     };
 }
