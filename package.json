@@ -21,7 +21,7 @@
     "lint:fix": "eslint --ext .ts,.js ./ --fix",
     "prettier": "prettier src/**/*.ts --check",
     "prettier:fix": "prettier src/**/*.ts --write",
-    "release": "npm run build && npm run lint && npm run test && npm run lint && npm login && git tag $npm_package_version && git push --tags && npm publish --access public"
+    "release": "npm run build && npm run lint && npm run test && npm run lint && npm login && npm publish --access public"
   },
   "repository": {
     "type": "git",
