@@ -8,8 +8,9 @@
 [![size](https://badgen.net/packagephobia/install/@owja/ioc)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
-It is currently work in progress and in unstable alpha phase.
-The API can change until 1.0.0 stable release.
+It is currently work in progress and in unstable beta phase
+but the API should not change anymore before 1.0.0 stable release
+will arrived.
 
 ### Usage
 

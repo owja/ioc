@@ -1,6 +1,6 @@
 {
   "name": "@owja/ioc",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-beta.0",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
@@ -21,7 +21,7 @@
     "lint:fix": "eslint --ext .ts,.js ./ --fix",
     "prettier": "prettier src/**/*.ts --check",
     "prettier:fix": "prettier src/**/*.ts --write",
-    "release": "npm run build && npm run lint && npm run test && npm run lint && npm login && npm publish --access public"
+    "release": "npm run build && npm run lint && npm run test && npm run prettier && read -p \"Press enter to continue\" && npm login && npm publish --access public"
   },
   "repository": {
     "type": "git",
