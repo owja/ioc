@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/owja/ioc/branch/master/graph/badge.svg)](https://codecov.io/gh/owja/ioc)
 [![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
 [![gzip size](http://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs?compression=gzip)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
-[![size](https://badgen.net/packagephobia/install/@owja/ioc)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
+[![size](https://badgen.net/packagephobia/install/@owja/ioc)](https://unpkg.com/@owja/ioc/dist/ioc.mjs) [![Greenkeeper badge](https://badges.greenkeeper.io/owja/ioc.svg)](https://greenkeeper.io/)
 
 This library implements dependency injection for javascript.
 It is currently work in progress and in unstable alpha phase.
