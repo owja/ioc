@@ -20,7 +20,7 @@ will arrived.
 npm install --save-dev @owja/ioc
 ``` 
 
-##### Step 3 - Create symbols for our dependencies
+##### Step 2 - Create symbols for our dependencies
 
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
@@ -30,7 +30,7 @@ export const TYPE = {
 };
 ```
 
-##### Step 2 - Creating a container
+##### Step 3 - Creating a container
 
 Next we need a container to bind our dependencies to. Let's create the file ***services/container.ts***
 
@@ -51,7 +51,7 @@ container.bind<IMyOtherService>(TYPE.MyOtherService).to(MyOtherService);
 export {container, TYPE, inject};
 ```
 
-##### Step 3 - Injecting dependencies
+##### Step 4 - Injecting dependencies
 
 Lets create a ***example.ts*** file in our source root:
  
