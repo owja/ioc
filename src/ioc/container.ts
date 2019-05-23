@@ -1,5 +1,4 @@
 interface IConfig<T> {
-    tags: string[];
     object?: INewAble<T>;
     factory?: Factory<T>;
     value?: Value<T>;
@@ -109,7 +108,6 @@ export class Container {
 
         this._registry[type.toString()] = {
             singleton: false,
-            tags: [],
         };
 
         return this._registry[type.toString()];
