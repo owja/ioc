@@ -30,6 +30,23 @@ describe("Container", () => {
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
     });
 
+    test("should use cached data in singleton scope", () => {
+        const spy = jest.fn();
+        spy.mockReturnValue("test");
+
+        container
+            .bind<string>(exampleSymbol)
+            .toFactory(spy)
+            .inSingletonScope();
+
+        container.get(exampleSymbol);
+        container.get(exampleSymbol);
+        container.get(exampleSymbol);
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(container.get<string>(exampleSymbol)).toBe("test");
+    });
+
     test("can bind a constructable", () => {
         interface IExampleConstructable {
             hello(): string;
