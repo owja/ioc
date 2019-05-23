@@ -70,21 +70,24 @@ export class Container {
     }
 
     get<T = never>(type: symbol): T {
-        if (typeof this._registry[type.toString()] === "undefined") {
+        const regItem = this._registry[type.toString()];
+
+        if (typeof regItem === "undefined") {
             throw `nothing bound to ${type.toString()}`;
         }
 
-        const {object, factory, value, cache, singleton} = this._registry[type.toString()];
+        const {object, factory, value, cache, singleton} = regItem;
 
-        const cacheItem = (item: T): T => {
+        const cacheItem = (creator: () => T): T => {
             if (singleton && typeof cache !== "undefined") return cache;
-            if (singleton) this._registry[type.toString()].cache = item;
-            return item;
+            if (!singleton) return creator();
+            regItem.cache = creator();
+            return regItem.cache;
         };
 
-        if (typeof object !== "undefined") return cacheItem(new object());
-        if (typeof factory !== "undefined") return cacheItem(factory());
         if (typeof value !== "undefined") return value;
+        if (typeof object !== "undefined") return cacheItem(() => new object());
+        if (typeof factory !== "undefined") return cacheItem(() => factory());
 
         throw `nothing is bound to ${type.toString()}`;
     }
