@@ -58,6 +58,7 @@ Lets create a ***example.ts*** file in our source root:
 ```ts
 import {container, TYPE, inject} from "./services/container";
 import {IMyService} from "./service/my-service";
+import {IMyOtherService} from "./service/my-other-service";
 
 class Example {
     @inject(TYPE.MyService)
