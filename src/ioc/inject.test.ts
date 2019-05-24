@@ -26,6 +26,7 @@ const TYPE = {
     circular2: Symbol.for("circular2"),
     circularFail1: Symbol.for("circularFail1"),
     circularFail2: Symbol.for("circularFail2"),
+    cacheTest: Symbol.for("cacheTest"),
 };
 
 class Parent implements ITestClass {
@@ -98,6 +99,11 @@ class CircularFail2 implements ICircular {
     }
 }
 
+class CacheTest {
+    @inject(TYPE.cacheTest)
+    cached!: number;
+}
+
 container.bind<ITestClass>(TYPE.parent).to(Parent);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
@@ -107,6 +113,9 @@ container.bind<ICircular>(TYPE.circularFail1).toFactory(() => new CircularFail1(
 container.bind<ICircular>(TYPE.circularFail2).toFactory(() => new CircularFail2("two"));
 container.bind<ICircular>(TYPE.circular1).toFactory(() => new Circular1("one"));
 container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
+
+let count: number;
+container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
 
 describe("Injector", () => {
     let instance: Parent;
@@ -141,5 +150,28 @@ describe("Injector", () => {
 
     test("can not inject a circular dependency when accessing the dependency inside of constructor", () => {
         expect(() => container.get<ICircular>(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
+    });
+
+    test("resolves only once with cache enabled by default", () => {
+        count = 0;
+        const cacheTest = new CacheTest();
+        expect(cacheTest.cached).toBe(1);
+        expect(cacheTest.cached).toBe(1);
+        expect(cacheTest.cached).toBe(1);
+    });
+
+    test("resolves new data with new instance even with cache enabled", () => {
+        count = 0;
+        const cacheTest1 = new CacheTest();
+        expect(cacheTest1.cached).toBe(1);
+        expect(cacheTest1.cached).toBe(1);
+
+        count = 9;
+        const cacheTest2 = new CacheTest();
+        expect(cacheTest2.cached).toBe(10);
+        expect(cacheTest2.cached).toBe(10);
+
+        // final proof
+        expect(cacheTest1.cached).toBe(1);
     });
 });
