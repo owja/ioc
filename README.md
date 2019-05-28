@@ -9,7 +9,7 @@
 This library implements dependency injection for javascript.
 It is currently work in progress and in unstable beta phase
 but the API should not change anymore before 1.0.0 stable release
-will arrived.
+will arrive.
 
 ## Features
 
@@ -21,9 +21,9 @@ will arrived.
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
-* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** 
+* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** compressed
 * Does **NOT** need reflect-metadata which size is around 50 kb
-* Written in Typescript
+* 100% written in **Typescript**
 
 ## The Container API
 
