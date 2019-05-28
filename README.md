@@ -11,6 +11,19 @@ It is currently work in progress and in unstable beta phase
 but the API should not change anymore before 1.0.0 stable release
 will arrived.
 
+## Features
+
+* Similar syntax to InversifyJS
+* Less Features but **straight forward**
+* Can bind dependencies as **classes**, **factories** and **static values**
+* Supports binding in **singleton scope**
+* **Cached** - Resolves only once in each dependency requesting class by default
+* **Cache can switched off** directly at the inject decorator
+* Made with **unit testing** in mind
+* Supports dependency **rebinding** and container **snapshots** and **restores**
+* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** compressed
+* Written in Typescript
+
 ## The Container API
 
 ### Creating a container
