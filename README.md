@@ -21,7 +21,8 @@ will arrived.
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
-* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** compressed
+* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** 
+* Does **NOT** need reflect-metadata which size is around 50 kb
 * Written in Typescript
 
 ## The Container API
