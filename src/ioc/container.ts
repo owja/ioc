@@ -6,13 +6,11 @@ interface IConfig<T> {
     singleton: boolean;
 }
 
-interface IRegistry {
-    [type: string]: IConfig<any>;
-}
-
 interface INewAble<T> {
     new (...args: any[]): T;
 }
+
+type Registry = Map<symbol, IConfig<any>>;
 
 type Factory<T> = () => T;
 type Value<T> = T;
@@ -47,8 +45,8 @@ class Bind<T> {
 }
 
 export class Container {
-    private _registry: IRegistry = {};
-    private _snapshots: IRegistry[] = [];
+    private _registry: Registry = new Map<symbol, IConfig<any>>();
+    private _snapshots: Registry[] = [];
 
     bind<T = never>(type: symbol): Bind<T> {
         return new Bind<T>(this._add<T>(type));
@@ -59,19 +57,19 @@ export class Container {
     }
 
     remove(type: symbol): Container {
-        if (typeof this._registry[type.toString()] === "undefined") {
+        if (this._registry.get(type) === undefined) {
             throw `${type.toString()} was never bound`;
         }
 
-        delete this._registry[type.toString()];
+        this._registry.delete(type);
 
         return this;
     }
 
     get<T = never>(type: symbol): T {
-        const regItem = this._registry[type.toString()];
+        const regItem = this._registry.get(type);
 
-        if (typeof regItem === "undefined") {
+        if (regItem === undefined) {
             throw `nothing bound to ${type.toString()}`;
         }
 
@@ -92,7 +90,7 @@ export class Container {
     }
 
     snapshot(): Container {
-        this._snapshots.push({...this._registry});
+        this._snapshots.push(new Map(this._registry));
         return this;
     }
 
@@ -102,14 +100,13 @@ export class Container {
     }
 
     private _add<T>(type: symbol): IConfig<T> {
-        if (typeof this._registry[type.toString()] === "object") {
+        if (this._registry.get(type) !== undefined) {
             throw `object can only bound once: ${type.toString()}`;
         }
 
-        this._registry[type.toString()] = {
-            singleton: false,
-        };
+        const conf = {singleton: false};
+        this._registry.set(type, conf);
 
-        return this._registry[type.toString()];
+        return conf;
     }
 }
