@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/owja/ioc/branch/master/graph/badge.svg)](https://codecov.io/gh/owja/ioc)
 [![Greenkeeper badge](https://badges.greenkeeper.io/owja/ioc.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
-[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs.svg?compression=gzip&label=size&max=1000&softmax=800)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
+[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs.svg?compression=gzip&label=size&max=1000&softmax=800&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
 It is currently work in progress and in unstable beta phase
@@ -21,7 +21,7 @@ will arrive.
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
-* **Lightweight** - Just around **700 Byte gzip** and **600 Byte brotli** compressed
+* **Lightweight** - Just around **750 Byte gzip** and **650 Byte brotli** compressed
 * Does **NOT** need reflect-metadata which size is around 50 kb
 * 100% written in **Typescript**
 
