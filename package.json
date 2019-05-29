@@ -15,7 +15,7 @@
     "di"
   ],
   "scripts": {
-    "build": "(rm -r dist/* || true) && microbundle --format es,cjs && (find ./dist -name '*.test.d.ts' -type f -delete || true)",
+    "build": "(rm -r dist/* || true) && microbundle --format es,cjs",
     "test": "jest",
     "lint": "eslint --ext .ts,.js ./",
     "lint:fix": "eslint --ext .ts,.js ./ --fix",
