@@ -29,6 +29,7 @@ const TYPE = {
     circularFail2: Symbol.for("circularFail2"),
     cacheTest: Symbol.for("cacheTest"),
     subscribable: Symbol.for("subscribable"),
+    subscribable2: Symbol.for("subscribable2"),
 };
 
 class Parent implements ITestClass {
@@ -134,6 +135,8 @@ class Subscribable {
 class Updateable {
     @inject(TYPE.subscribable, SUBSCRIBE)
     service!: Subscribable;
+    @inject(TYPE.subscribable2, SUBSCRIBE)
+    service2!: Subscribable;
     forceUpdate() {}
 }
 
@@ -148,6 +151,10 @@ container.bind<ICircular>(TYPE.circular1).toFactory(() => new Circular1("one"));
 container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 container
     .bind<Subscribable>(TYPE.subscribable)
+    .to(Subscribable)
+    .inSingletonScope();
+container
+    .bind<Subscribable>(TYPE.subscribable2)
     .to(Subscribable)
     .inSingletonScope();
 
@@ -266,18 +273,23 @@ describe("Injector", () => {
      */
     test("dirty subscribable test", () => {
         const subscribable = container.get<Subscribable>(TYPE.subscribable);
+        const subscribable2 = container.get<Subscribable>(TYPE.subscribable2);
         const listener = new Updateable();
 
         jest.spyOn<any, any>(listener, "forceUpdate");
 
         expect(subscribable.listener).toHaveLength(0); // not registered the listener jet
+        expect(subscribable2.listener).toHaveLength(0); // not registered the listener jet
 
         listener.service.trigger();
-        expect(listener.forceUpdate).toHaveBeenCalledTimes(1);
+        listener.service2.trigger();
+        expect(listener.forceUpdate).toHaveBeenCalledTimes(2);
 
         expect(subscribable.listener).toHaveLength(1); // after accessing the property it is registered
+        expect(subscribable2.listener).toHaveLength(1); // after accessing the property it is registered
 
         (listener as any).componentWillUnmount();
         expect(subscribable.listener).toHaveLength(0);
+        expect(subscribable2.listener).toHaveLength(0);
     });
 });
