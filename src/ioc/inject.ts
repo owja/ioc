@@ -1,13 +1,13 @@
 import {Container} from "./container";
 
-export const NOCACHE = Symbol.for("NOCACHE");
+export const NOCACHE = Symbol("NOCACHE");
 
-function inject(type: symbol, container: Container, args?: symbol[]) {
+function inject(type: symbol, container: Container, args: symbol[]) {
     return function(target: object, property: string): void {
         Object.defineProperty(target, property, {
             get: function() {
                 const value = container.get<any>(type);
-                if (args && args.indexOf(NOCACHE)) {
+                if (args.indexOf(NOCACHE) === -1) {
                     Object.defineProperty(this, property, {
                         value,
                         enumerable: true,
