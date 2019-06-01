@@ -146,10 +146,24 @@ Symbols are used to identify our dependencies. A good practice is to keep them i
 
 ```ts
 export const TYPE = {
+    "Service" = Symbol("Service"),
+    // [...]
+}
+```
+
+Symbols can be defined with `Symbol.for()` too. This way they are not unique.
+Remember `Symbol('foo') === Symbol('foo')` is `false` but
+`Symbol.for('foo') === Symbol.for('foo')` is `true`
+
+```ts
+export const TYPE = {
     "Service" = Symbol.for("Service"),
     // [...]
 }
 ```
+
+> Since 1.0.0-beta.3 we use the symbol itself for indexing the dependencies.
+> Prior to this version we indexed the dependencies by the string of the symbol.
 
 ## Usage
 
@@ -164,8 +178,8 @@ npm install --save-dev @owja/ioc
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
 export const TYPE = {
-    "MyService" = Symbol.for("MyService"),
-    "MyOtherService" = Symbol.for("MyOtherService"),
+    "MyService" = Symbol("MyService"),
+    "MyOtherService" = Symbol("MyOtherService"),
 };
 ```
 
