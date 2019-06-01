@@ -1,8 +1,9 @@
 import {Container} from "./container";
-import {createDecorator, NOCACHE} from "./inject";
+import {createDecorator, createWire, NOCACHE} from "./inject";
 
 const container = new Container();
 const inject = createDecorator(container);
+const wire = createWire(container);
 
 interface ITestClass {
     name: string;
@@ -106,6 +107,16 @@ class CacheTest {
     notCached!: number;
 }
 
+class WireTest {
+    cached!: number;
+    notCached!: number;
+
+    constructor() {
+        wire(this, "cached", TYPE.cacheTest);
+        wire(this, "notCached", TYPE.cacheTest, NOCACHE);
+    }
+}
+
 container.bind<ITestClass>(TYPE.parent).to(Parent);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
@@ -189,6 +200,34 @@ describe("Injector", () => {
         count = 0;
         const cacheTest1 = new CacheTest();
         const cacheTest2 = new CacheTest();
+        expect(cacheTest1.notCached).toBe(1);
+        expect(cacheTest1.notCached).toBe(2);
+        expect(cacheTest2.notCached).toBe(3);
+        expect(cacheTest2.notCached).toBe(4);
+
+        // final proof
+        expect(cacheTest1.notCached).toBe(5);
+    });
+
+    test("resolves new data with new instance even with cache enabled (with wire)", () => {
+        count = 0;
+        const cacheTest1 = new WireTest();
+        expect(cacheTest1.cached).toBe(1);
+        expect(cacheTest1.cached).toBe(1);
+
+        count = 9;
+        const cacheTest2 = new WireTest();
+        expect(cacheTest2.cached).toBe(10);
+        expect(cacheTest2.cached).toBe(10);
+
+        // final proof
+        expect(cacheTest1.cached).toBe(1);
+    });
+
+    test("resolves new data with new instance even with cache disabled (with wire)", () => {
+        count = 0;
+        const cacheTest1 = new WireTest();
+        const cacheTest2 = new WireTest();
         expect(cacheTest1.notCached).toBe(1);
         expect(cacheTest1.notCached).toBe(2);
         expect(cacheTest2.notCached).toBe(3);
