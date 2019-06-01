@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import {createDecorator, createWire, NOCACHE} from "./inject";
+import {createDecorator, createWire, NOCACHE, SUBSCRIBE} from "./inject";
 
 const container = new Container();
 const inject = createDecorator(container);
@@ -28,6 +28,7 @@ const TYPE = {
     circularFail1: Symbol.for("circularFail1"),
     circularFail2: Symbol.for("circularFail2"),
     cacheTest: Symbol.for("cacheTest"),
+    subscribable: Symbol.for("subscribable"),
 };
 
 class Parent implements ITestClass {
@@ -117,6 +118,25 @@ class WireTest {
     }
 }
 
+class Subscribable {
+    listener: (() => void)[] = [];
+
+    listen(listener: () => void): () => void {
+        this.listener.push(listener);
+        return () => this.listener.splice(this.listener.indexOf(listener), 1);
+    }
+
+    trigger() {
+        this.listener.forEach((cb) => cb());
+    }
+}
+
+class Updateable {
+    @inject(TYPE.subscribable, SUBSCRIBE)
+    service!: Subscribable;
+    forceUpdate() {}
+}
+
 container.bind<ITestClass>(TYPE.parent).to(Parent);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
@@ -126,6 +146,10 @@ container.bind<ICircular>(TYPE.circularFail1).toFactory(() => new CircularFail1(
 container.bind<ICircular>(TYPE.circularFail2).toFactory(() => new CircularFail2("two"));
 container.bind<ICircular>(TYPE.circular1).toFactory(() => new Circular1("one"));
 container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
+container
+    .bind<Subscribable>(TYPE.subscribable)
+    .to(Subscribable)
+    .inSingletonScope();
 
 let count: number;
 container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
@@ -235,5 +259,25 @@ describe("Injector", () => {
 
         // final proof
         expect(cacheTest1.notCached).toBe(5);
+    });
+
+    /**
+     * Just a dirty test for the hard coded implementation
+     */
+    test("dirty subscribable test", () => {
+        const subscribable = container.get<Subscribable>(TYPE.subscribable);
+        const listener = new Updateable();
+
+        jest.spyOn<any, any>(listener, "forceUpdate");
+
+        expect(subscribable.listener).toHaveLength(0); // not registered the listener jet
+
+        listener.service.trigger();
+        expect(listener.forceUpdate).toHaveBeenCalledTimes(1);
+
+        expect(subscribable.listener).toHaveLength(1); // after accessing the property it is registered
+
+        (listener as any).componentWillUnmount();
+        expect(subscribable.listener).toHaveLength(0);
     });
 });
