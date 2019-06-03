@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import {createDecorator, createWire, NOCACHE, SUBSCRIBE} from "./inject";
+import {createDecorator, createWire, NOCACHE, LINK} from "./inject";
 
 const container = new Container();
 const inject = createDecorator(container);
@@ -133,9 +133,9 @@ class Subscribable {
 }
 
 class Updateable {
-    @inject(TYPE.subscribable, SUBSCRIBE)
+    @inject(TYPE.subscribable, LINK)
     service!: Subscribable;
-    @inject(TYPE.subscribable2, SUBSCRIBE)
+    @inject(TYPE.subscribable2, LINK)
     service2!: Subscribable;
     forceUpdate() {}
 }
@@ -152,11 +152,13 @@ container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 container
     .bind<Subscribable>(TYPE.subscribable)
     .to(Subscribable)
-    .inSingletonScope();
+    .inSingletonScope()
+    .link("listen", "forceUpdate", "componentWillUnmount");
 container
     .bind<Subscribable>(TYPE.subscribable2)
     .to(Subscribable)
-    .inSingletonScope();
+    .inSingletonScope()
+    .link("listen", "forceUpdate", "componentWillUnmount");
 
 let count: number;
 container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);

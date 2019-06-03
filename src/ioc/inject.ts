@@ -1,7 +1,7 @@
 import {Container} from "./container";
 
 export const NOCACHE = Symbol("NOCACHE");
-export const SUBSCRIBE = Symbol("SUBSCRIBE");
+export const LINK = Symbol("LINK");
 
 interface ISubscribable {
     [name: string]: (callback: () => void) => () => void | any;
@@ -11,23 +11,23 @@ interface IListener {
     [name: string]: () => void | any;
 }
 
-/**
- * Just a dirty hard coded implementation
- */
-function subscribe(listener: IListener, subscribable: ISubscribable) {
-    if (typeof subscribable["listen"] !== "function") return;
-    if (typeof listener["forceUpdate"] !== "function") return;
+function link(listener: IListener, subscribable: ISubscribable, container: Container, type: symbol) {
+    const config = container.getLinkConfig(type);
+    if (!config) return;
+    if (typeof subscribable[config.to] !== "function") return;
+    if (typeof listener[config.action] !== "function") return;
 
-    const unsubscribe = subscribable.listen(() => listener.forceUpdate());
+    const unsubscribe = subscribable.listen(() => listener[config.action]());
+    if (typeof unsubscribe !== "function") return;
 
-    if (typeof listener["componentWillUnmount"] === "function") {
-        const unmount = listener["componentWillUnmount"];
-        listener["componentWillUnmount"] = () => {
-            unmount();
+    if (typeof listener[config.unlink] === "function") {
+        const unlink = listener[config.unlink];
+        listener[config.unlink] = () => {
+            unlink();
             unsubscribe();
         };
     } else {
-        listener["componentWillUnmount"] = unsubscribe;
+        listener[config.unlink] = unsubscribe;
     }
 }
 
@@ -35,7 +35,7 @@ function define(target: object, property: string, container: Container, type: sy
     Object.defineProperty(target, property, {
         get: function() {
             const value = container.get<any>(type);
-            if (args.indexOf(SUBSCRIBE) !== -1) subscribe(this, value);
+            if (args.indexOf(LINK) !== -1) link(this, value, container, type);
             if (args.indexOf(NOCACHE) === -1) {
                 Object.defineProperty(this, property, {
                     value,
