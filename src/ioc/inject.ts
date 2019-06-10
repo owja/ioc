@@ -36,3 +36,15 @@ export function createWire(container: Container) {
         define(target, property, container, type, args);
     };
 }
+
+export function createResolve(container: Container) {
+    return <T = never>(type: symbol, ...args: symbol[]) => {
+        let value: T;
+        return (): T => {
+            if (args.indexOf(NOCACHE) !== -1 || value === undefined) {
+                value = container.get<T>(type);
+            }
+            return value;
+        }
+    }
+}
