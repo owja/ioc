@@ -119,8 +119,8 @@ class WireTest {
 }
 
 class ResolveTest {
-    cached = resolve<number>(TYPE.cacheTest);
-    notCached = resolve<number>(TYPE.cacheTest, NOCACHE);
+    cached = resolve<number>(this, TYPE.cacheTest);
+    notCached = resolve<number>(this, TYPE.cacheTest, NOCACHE);
 }
 
 container.bind<ITestClass>(TYPE.parent).to(Parent);
