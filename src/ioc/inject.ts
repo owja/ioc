@@ -45,6 +45,6 @@ export function createResolve(container: Container) {
                 value = container.get<T>(type);
             }
             return value;
-        }
-    }
+        };
+    };
 }
