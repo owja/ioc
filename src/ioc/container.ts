@@ -3,7 +3,14 @@ interface IConfig<T> {
     factory?: Factory<T>;
     value?: Value<T>;
     cache?: T;
-    singleton: boolean;
+    link?: ILinkConfig<T>;
+    singleton?: boolean;
+}
+
+interface ILinkConfig<T> {
+    to: keyof T & string;
+    action: string;
+    unlink: string;
 }
 
 interface INewAble<T> {
@@ -15,11 +22,27 @@ type Registry = Map<symbol, IConfig<any>>;
 type Factory<T> = () => T;
 type Value<T> = T;
 
+class Link<T> {
+    constructor(private _target: IConfig<T>) {}
+
+    /**
+     * Optional: Linking a listener
+     *
+     * @param to        string  method name on the dependency like ".listen(callback: () => void): Unsubscribe"
+     * @param action    string  method name on the dependent which shall get triggered like ".forceUpdate(): void"
+     * @param unlink    string  method name on the dependent which shall unregister like ".componentWillUnmount(): void" or ".dispose(): void"
+     */
+    link(to: keyof T & string, action: string, unlink: string) {
+        this._target.link = {to, action, unlink};
+    }
+}
+
 class Options<T> {
     constructor(private _target: IConfig<T>) {}
 
-    inSingletonScope() {
+    inSingletonScope(): Link<T> {
         this._target.singleton = true;
+        return new Link<T>(this._target);
     }
 }
 
@@ -36,11 +59,12 @@ class Bind<T> {
         return new Options<T>(this._target);
     }
 
-    toValue(value: Value<T>): void {
+    toValue(value: Value<T>): Link<T> {
         if (typeof value === "undefined") {
             throw "cannot bind a value of type undefined";
         }
         this._target.value = value;
+        return new Link<T>(this._target);
     }
 }
 
@@ -89,14 +113,17 @@ export class Container {
         throw `nothing is bound to ${type.toString()}`;
     }
 
-    snapshot(): Container {
-        this._snapshots.push(new Map(this._registry));
-        return this;
+    getLinkConfig(type: symbol): ILinkConfig<any> | undefined {
+        const regItem = this._registry.get(type);
+        return regItem === undefined ? undefined : regItem.link;
     }
 
-    restore(): Container {
+    snapshot() {
+        this._snapshots.push(new Map(this._registry));
+    }
+
+    restore() {
         this._registry = this._snapshots.pop() || this._registry;
-        return this;
     }
 
     private _add<T>(type: symbol): IConfig<T> {
@@ -104,7 +131,7 @@ export class Container {
             throw `object can only bound once: ${type.toString()}`;
         }
 
-        const conf = {singleton: false};
+        const conf = {};
         this._registry.set(type, conf);
 
         return conf;
