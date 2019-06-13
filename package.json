@@ -40,7 +40,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-jest": "^22.6.4",
     "jest": "^24.8.0",
-    "microbundle": "^0.11.0",
+    "microbundle": "^0.12.0-next.1",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.2.0",
