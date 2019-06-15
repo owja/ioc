@@ -14,6 +14,7 @@ will arrive.
 ## Features
 
 * Similar syntax to InversifyJS
+* Can be used without decorators
 * Less Features but **straight forward**
 * Can bind dependencies as **classes**, **factories** and **static values**
 * Supports binding in **singleton scope**
@@ -23,7 +24,6 @@ will arrive.
 * Supports dependency **rebinding** and container **snapshots** and **restores**
 * **Lightweight** - Just around **750 Byte gzip** and **650 Byte brotli** compressed
 * Does **NOT** need reflect-metadata which size is around 50 kb
-* Can be used without inject decorator
 * 100% written in **Typescript**
 
 ## The Container API
