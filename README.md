@@ -161,9 +161,10 @@ Then we can wire up the dependent to the dependency.
 
 ```ts
 class Example {
-    readonly service!: IMyService;
+    readonly service!: Interface;
+    
     constructor() {
-        wire(this, "service", TYPE.MyService);
+        wire(this, "service", symbol);
     }
     
     method() {
@@ -188,7 +189,7 @@ Then we can resolve the dependency in classes and even functions.
 
 ```ts
 class Example {
-    readonly service = resolve<IMyService>(TYPE.MyService)
+    readonly service = resolve<Interface>(symbol)
     
     method() {
         this.service().doSomething();
@@ -198,7 +199,7 @@ class Example {
 
 ```ts
 function Example() {
-    const service = resolve<IMyService>(TYPE.MyService)
+    const service = resolve<Interface>(symbol)
     service().doSomething();
 }
 ```
@@ -261,14 +262,14 @@ import {Container, createDecorator} from "@owja/ioc";
 
 import {TYPE} from "./types";
 
-import {IMyService, MyService} from "./service/my-service";
-import {IMyOtherService, MyOtherService} from "./service/my-other-service";
+import {MyServiceInterface, MyService} from "./service/my-service";
+import {MyOtherServiceInterface, MyOtherService} from "./service/my-other-service";
 
 const container = new Container();
 const inject = createDecorator(container);
 
-container.bind<IMyService>(TYPE.MyService).to(MyService);
-container.bind<IMyOtherService>(TYPE.MyOtherService).to(MyOtherService);
+container.bind<MyServiceInterface>(TYPE.MyService).to(MyService);
+container.bind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherService);
 
 export {container, TYPE, inject};
 ```
@@ -279,15 +280,15 @@ Lets create a ***example.ts*** file in our source root:
  
 ```ts
 import {container, TYPE, inject} from "./services/container";
-import {IMyService} from "./service/my-service";
-import {IMyOtherService} from "./service/my-other-service";
+import {MyServiceInterface} from "./service/my-service";
+import {MyOtherServiceInterface} from "./service/my-other-service";
 
 class Example {
     @inject(TYPE.MyService)
-    readonly myService!: IMyService;
+    readonly myService!: MyServiceInterface;
     
     @inject(TYPE.MyOtherSerice)
-    readonly myOtherService!: IMyOtherService;
+    readonly myOtherService!: MyOtherServiceInterface;
 }
 
 const example = new Example();
@@ -310,10 +311,10 @@ import {NOCACHE} from "@owja/ioc";
 
 class Example {
     @inject(TYPE.MyService, NOCACHE)
-    readonly myService!: IMyService;
+    readonly myService!: MyServiceInterface;
     
     @inject(TYPE.MyOtherSerice, NOCACHE)
-    readonly myOtherService!: IMyOtherService;
+    readonly myOtherService!: MyOtherServiceInterface;
 }
 
 // [...]
