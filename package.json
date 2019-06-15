@@ -34,17 +34,19 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "CC-BY-4.0",
   "devDependencies": {
-    "@types/jest": "^24.0.13",
+    "@babel/plugin-transform-regenerator": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@types/jest": "^24.0.14",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "@typescript-eslint/parser": "^1.10.2",
     "eslint": "^5.16.0",
     "eslint-plugin-jest": "^22.6.4",
     "jest": "^24.8.0",
-    "microbundle": "^0.12.0-next.1",
+    "microbundle": "^0.12.0-next.2",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
-    "ts-node": "^8.2.0",
-    "typescript": "^3.5.1"
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
   },
   "mangle": {
     "regex": "^_"
