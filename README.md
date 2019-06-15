@@ -14,6 +14,7 @@ will arrive.
 ## Features
 
 * Similar syntax to InversifyJS
+* Can be used without decorators
 * Less Features but **straight forward**
 * Can bind dependencies as **classes**, **factories** and **static values**
 * Supports binding in **singleton scope**
@@ -123,22 +124,91 @@ container.restore();
 
 ## The `inject` Decorator
 
-We have to create a `inject` decorator for each container.
+To use the decorator you have to set `experimentalDecorators` to `true`
+in your `tsconfig.json`.
+
+First we have to create a `inject` decorator for each container: 
 
 ```ts
 import {createDecorator} from "@owja/ioc";
-
 export const inject = createDecorator(container);
 ```
 
-This decorator is needed to resolve our dependencies. 
+Then we can use the decorator to inject the dependency.
 
 ```ts
 class Example {
     @inject(symbol)
     readonly service!: Interface;
+    
+    method() {
+        this.service.doSomething();
+    }
 }
 ```
+
+## The `wire()` Function
+
+If we do not want to use decorators, we can use the wire function. It does the same like the `inject`
+decorator and we have to create the function first like we do with `inject`.
+
+```ts
+import {createWire} from "@owja/ioc";
+export const wire = createWire(container);
+```
+
+Then we can wire up the dependent to the dependency.
+
+```ts
+class Example {
+    readonly service!: Interface;
+    
+    constructor() {
+        wire(this, "service", symbol);
+    }
+    
+    method() {
+        this.service.doSomething();
+    }
+}
+```
+
+> Notice: With `wire()` the property, in this case `service`, has to be public. 
+
+## The `resolve()` Function
+
+A second way to resolve a dependency without decorators is to use `resolve()`.
+To use `resolve()` we have to create the function first.
+
+```ts
+import {createResolve} from "@owja/ioc";
+export const resolve = createResolve(container);
+```
+
+Then we can resolve the dependency in classes and even functions.
+
+```ts
+class Example {
+    readonly service = resolve<Interface>(symbol)
+    
+    method() {
+        this.service().doSomething();
+    }
+}
+```
+
+```ts
+function Example() {
+    const service = resolve<Interface>(symbol)
+    service().doSomething();
+}
+```
+
+> Notice: We access the dependency trough a function.
+> The dependency is not assigned directly to the property/constant.
+> If we want direct access we can use `container.get()` but we should avoid
+> using `get()` inside of classes because we then loose the lazy dependency
+> resolving/injection behavior. 
 
 ## The `symbol`
 
@@ -192,14 +262,14 @@ import {Container, createDecorator} from "@owja/ioc";
 
 import {TYPE} from "./types";
 
-import {IMyService, MyService} from "./service/my-service";
-import {IMyOtherService, MyOtherService} from "./service/my-other-service";
+import {MyServiceInterface, MyService} from "./service/my-service";
+import {MyOtherServiceInterface, MyOtherService} from "./service/my-other-service";
 
 const container = new Container();
 const inject = createDecorator(container);
 
-container.bind<IMyService>(TYPE.MyService).to(MyService);
-container.bind<IMyOtherService>(TYPE.MyOtherService).to(MyOtherService);
+container.bind<MyServiceInterface>(TYPE.MyService).to(MyService);
+container.bind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherService);
 
 export {container, TYPE, inject};
 ```
@@ -210,15 +280,15 @@ Lets create a ***example.ts*** file in our source root:
  
 ```ts
 import {container, TYPE, inject} from "./services/container";
-import {IMyService} from "./service/my-service";
-import {IMyOtherService} from "./service/my-other-service";
+import {MyServiceInterface} from "./service/my-service";
+import {MyOtherServiceInterface} from "./service/my-other-service";
 
 class Example {
     @inject(TYPE.MyService)
-    readonly myService!: IMyService;
+    readonly myService!: MyServiceInterface;
     
     @inject(TYPE.MyOtherSerice)
-    readonly myOtherService!: IMyOtherService;
+    readonly myOtherService!: MyOtherServiceInterface;
 }
 
 const example = new Example();
@@ -241,10 +311,10 @@ import {NOCACHE} from "@owja/ioc";
 
 class Example {
     @inject(TYPE.MyService, NOCACHE)
-    readonly myService!: IMyService;
+    readonly myService!: MyServiceInterface;
     
     @inject(TYPE.MyOtherSerice, NOCACHE)
-    readonly myOtherService!: IMyOtherService;
+    readonly myOtherService!: MyOtherServiceInterface;
 }
 
 // [...]
