@@ -119,8 +119,24 @@ class WireTest {
 }
 
 class ResolveTest {
-    cached = resolve<number>(this, TYPE.cacheTest);
-    notCached = resolve<number>(this, TYPE.cacheTest, NOCACHE);
+    cached = resolve<number>(TYPE.cacheTest);
+    notCached = resolve<number>(TYPE.cacheTest, NOCACHE);
+}
+
+function ResolveTestFunctionCached() {
+    const cached = resolve<number>(TYPE.cacheTest);
+    cached();
+    cached();
+    cached();
+    return cached();
+}
+
+function ResolveTestFunctionCacheNoCache() {
+    const cached = resolve<number>(TYPE.cacheTest, NOCACHE);
+    cached();
+    cached();
+    cached();
+    return cached();
 }
 
 container.bind<ITestClass>(TYPE.parent).to(Parent);
@@ -269,5 +285,15 @@ describe("Injector", () => {
 
         // final proof
         expect(cacheTest1.notCached()).toBe(5);
+    });
+
+    test("a function can use resolve", () => {
+        count = 0;
+        expect(ResolveTestFunctionCached()).toBe(1);
+    });
+
+    test("a function can use resolve with cache disabled", () => {
+        count = 0;
+        expect(ResolveTestFunctionCacheNoCache()).toBe(4);
     });
 });

@@ -38,8 +38,7 @@ export function createWire(container: Container) {
 }
 
 export function createResolve(container: Container) {
-    return <T = never>(_target: any, type: symbol, ...args: symbol[]) => {
-        // `target` will get used in the Subscribable proposal. Reserving it.
+    return <T = never>(type: symbol, ...args: symbol[]) => {
         let value: T;
         return (): T => {
             if (args.indexOf(NOCACHE) !== -1 || value === undefined) {
