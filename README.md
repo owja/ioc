@@ -177,8 +177,8 @@ class Example {
 
 ## The `resolve()` Function
 
-A second way to resolve a dependency is to use `resolve()`. We have to create the
-function first like before.
+A second way to resolve a dependency without decorators is to use `resolve()`.
+To use `resolve()` we have to create the function first.
 
 ```ts
 import {createResolve} from "@owja/ioc";
@@ -208,7 +208,7 @@ function Example() {
 > The dependency is not assigned directly to the property/constant.
 > If we want direct access we can use `container.get()` but we should avoid
 > using `get()` inside of classes because we then loose the lazy dependency
-> resolving behavior. 
+> resolving/injection behavior. 
 
 ## The `symbol`
 
