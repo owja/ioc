@@ -23,6 +23,7 @@ will arrive.
 * Supports dependency **rebinding** and container **snapshots** and **restores**
 * **Lightweight** - Just around **750 Byte gzip** and **650 Byte brotli** compressed
 * Does **NOT** need reflect-metadata which size is around 50 kb
+* Can be used without inject decorator
 * 100% written in **Typescript**
 
 ## The Container API
@@ -123,22 +124,90 @@ container.restore();
 
 ## The `inject` Decorator
 
-We have to create a `inject` decorator for each container.
+To use the decorator you have to set `experimentalDecorators` to `true`
+in your `tsconfig.json`.
+
+First we have to create a `inject` decorator for each container: 
 
 ```ts
 import {createDecorator} from "@owja/ioc";
-
 export const inject = createDecorator(container);
 ```
 
-This decorator is needed to resolve our dependencies. 
+Then we can use the decorator to inject the dependency.
 
 ```ts
 class Example {
     @inject(symbol)
     readonly service!: Interface;
+    
+    method() {
+        this.service.doSomething();
+    }
 }
 ```
+
+## The `wire()` Function
+
+If we do not want to use decorators, we can use the wire function. It does the same like the `inject`
+decorator and we have to create the function first like we do with `inject`.
+
+```ts
+import {createWire} from "@owja/ioc";
+export const wire = createWire(container);
+```
+
+Then we can wire up the dependent to the dependency.
+
+```ts
+class Example {
+    readonly service!: IMyService;
+    constructor() {
+        wire(this, "service", TYPE.MyService);
+    }
+    
+    method() {
+        this.service.doSomething();
+    }
+}
+```
+
+> Notice: With `wire()` the property, in this case `service`, has to be public. 
+
+## The `resolve()` Function
+
+A second way to resolve a dependency is to use `resolve()`. We have to create the
+function first like before.
+
+```ts
+import {createResolve} from "@owja/ioc";
+export const resolve = createResolve(container);
+```
+
+Then we can resolve the dependency in classes and even functions.
+
+```ts
+class Example {
+    readonly service = resolve<IMyService>(TYPE.MyService)
+    
+    method() {
+        this.service().doSomething();
+    }
+}
+```
+
+```ts
+function Example() {
+    const service = resolve<IMyService>(TYPE.MyService)
+    service().doSomething();
+}
+```
+
+> Notice: We access the dependency trough a function.
+> The dependency is not assigned directly to the property/constant.
+> If we want direct access we can use `container.get()` but we should avoid
+> using `get()` inside of classes because we then loose the lazy dependency
+> resolving behavior. 
 
 ## The `symbol`
 
