@@ -51,5 +51,14 @@
   },
   "files": [
     "/dist"
+  ],
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "last 2 iOS versions",
+    "last 2 and_ff versions",
+    "last 2 and_chr versions"
   ]
 }
