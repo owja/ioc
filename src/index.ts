@@ -1,2 +1,2 @@
 export {Container} from "./ioc/container";
-export {createDecorator, NOCACHE} from "./ioc/inject";
+export {createDecorator, createWire, createResolve, NOCACHE} from "./ioc/inject";
