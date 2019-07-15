@@ -17,8 +17,8 @@
   "scripts": {
     "build": "(rm -r dist/* || true) && microbundle --format es,cjs",
     "test": "jest",
-    "lint": "eslint --ext .ts,.js ./",
-    "lint:fix": "eslint --ext .ts,.js ./ --fix",
+    "lint": "eslint --ext .ts ./src",
+    "lint:fix": "eslint --ext .ts ./src --fix",
     "prettier": "prettier src/**/*.ts --check",
     "prettier:fix": "prettier src/**/*.ts --write",
     "release": "npm run build && npm run lint && npm run test && npm run prettier && npm login && npm publish --access public"
@@ -34,17 +34,17 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "CC-BY-4.0",
   "devDependencies": {
-    "@types/jest": "^24.0.13",
-    "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.2",
-    "eslint": "^5.16.0",
-    "eslint-plugin-jest": "^22.6.4",
+    "@types/jest": "^24.0.15",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
+    "eslint": "^6.0.1",
+    "eslint-plugin-jest": "^22.8.0",
     "jest": "^24.8.0",
     "microbundle": "^0.11.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
-    "ts-node": "^8.2.0",
-    "typescript": "^3.5.1"
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   },
   "mangle": {
     "regex": "^_"
