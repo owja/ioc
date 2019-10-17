@@ -7,9 +7,6 @@
 [![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs.svg?compression=gzip&label=size&max=1000&softmax=800&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
-It is currently work in progress and in unstable beta phase
-but the API should not change anymore before 1.0.0 stable release
-will arrive.
 
 ## Features
 
