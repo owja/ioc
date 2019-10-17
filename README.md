@@ -353,8 +353,7 @@ test("can do something", () => {
 ## Development
 
 Current state of development can be seen in our
-[Github Project](https://github.com/owja/ioc/projects/1)
-for the second release.
+[Github Projects](https://github.com/owja/ioc/projects).
 
 ## Inspiration
 
