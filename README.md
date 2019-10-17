@@ -18,7 +18,7 @@ will arrive.
 * Less Features but **straight forward**
 * Can bind dependencies as **classes**, **factories** and **static values**
 * Supports binding in **singleton scope**
-* **Cached** - Resolves only once in each dependency requesting class by default
+* **Cached** - Resolves only once in each dependent class by default
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
@@ -30,8 +30,8 @@ will arrive.
 
 ### Creating a container
 
-The container is the place where all dependencies get bound to. We can have
-multiple containers in our project in parallel.
+The container is the place where all dependencies get bound to. It is possible to have
+multiple container in our project in parallel.
 
 ```ts
 import {Container} from "@owja/ioc";
@@ -78,7 +78,7 @@ This is always like singleton scope, but it should be avoid to instantiate
 dependencies here. If they are circular dependencies, they will fail. 
 
 ```ts
-container.bind<ServiceInterface>(symbol).toValue(new Service());
+container.bind<ServiceInterface>(symbol).toValue(new Service()); // Bad, should be avoid
 container.bind<string>(symbol).toValue("just a string");
 container.bind<() => string>(symbol).toValue(() => "i am a function");
 ```
@@ -103,12 +103,20 @@ container.remove(symbol);
 
 ### Getting a dependency
 
-Getting dependencies without `inject` decorators are only meant for **unit tests**. This is also
-the internal way the `inject` decorator gets the dependency it has to resolve.
+Getting dependencies without `@inject` decorators trough `container.get()` is only meant for **unit tests**. 
+This is also the internal way how the `@inject` decorator and the functions `wire()` and `resolve()` are getting the
+dependency.
  
 ```ts
 container.get<Interface>(symbol);
 ```
+
+To get a dependency without `@inject` decorator in production code use `wire()` or `resolve()`. Using `container.get()`
+directly to getting dependencies can result in infinite loops with circular dependencies when called inside of
+constructors. In addition `container.get()` does not respect the cache. 
+
+> **Important Note:**  You should avoid accessing the dependencies from any constructor. With circular dependencies
+> this can result in a infinite loop.
 
 ### Snapshot & Restore
 
@@ -189,7 +197,7 @@ Then we can resolve the dependency in classes and even functions.
 
 ```ts
 class Example {
-    readonly service = resolve<Interface>(symbol)
+    private readonly service = resolve<Interface>(symbol);
     
     method() {
         this.service().doSomething();
@@ -199,7 +207,7 @@ class Example {
 
 ```ts
 function Example() {
-    const service = resolve<Interface>(symbol)
+    const service = resolve<Interface>(symbol);
     service().doSomething();
 }
 ```
@@ -208,7 +216,7 @@ function Example() {
 > The dependency is not assigned directly to the property/constant.
 > If we want direct access we can use `container.get()` but we should avoid
 > using `get()` inside of classes because we then loose the lazy dependency
-> resolving/injection behavior. 
+> resolving/injection behavior and caching.
 
 ## The `symbol`
 
@@ -337,15 +345,16 @@ afterEach(() => {
 }
 
 test("can do something", () => {
-    container.rebind<MyServiceMock>(TYPE.MySerice).to(MyServiceMock);
+    container.rebind<MyServiceMock>(TYPE.MySerice).toValue(new MyServiceMock());
     const mock = container.get<MyServiceMock>(TYPE.MySerice);
 });
 ```
 
 ## Development
 
-We are working on the first stable release. Current state of development can be seen in our
-[Github Project](https://github.com/owja/ioc/projects/1) for the first release.
+Current state of development can be seen in our
+[Github Project](https://github.com/owja/ioc/projects/1)
+for the second release.
 
 ## Inspiration
 
