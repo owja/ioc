@@ -221,7 +221,7 @@ Symbols are used to identify our dependencies. A good practice is to keep them i
 
 ```ts
 export const TYPE = {
-    "Service" = Symbol("Service"),
+    Service: = Symbol("Service"),
     // [...]
 }
 ```
@@ -232,7 +232,7 @@ Remember `Symbol('foo') === Symbol('foo')` is `false` but
 
 ```ts
 export const TYPE = {
-    "Service" = Symbol.for("Service"),
+    Service: Symbol.for("Service"),
     // [...]
 }
 ```
@@ -253,8 +253,8 @@ npm install --save-dev @owja/ioc
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
 export const TYPE = {
-    "MyService" = Symbol("MyService"),
-    "MyOtherService" = Symbol("MyOtherService"),
+    MyService: Symbol("MyService"),
+    MyOtherService: Symbol("MyOtherService"),
 };
 ```
 
