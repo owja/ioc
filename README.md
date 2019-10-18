@@ -248,17 +248,43 @@ export const TYPE = {
 npm install --save-dev @owja/ioc
 ``` 
 
-#### Step 2 - Create symbols for our dependencies
+#### Step 2 - Creating symbols for our dependencies
 
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
 export const TYPE = {
-    "MyService" = Symbol("MyService"),
-    "MyOtherService" = Symbol("MyOtherService"),
+    MyService: Symbol("MyService"),
+    MyOtherService: Symbol("MyOtherService"),
 };
 ```
 
-#### Step 3 - Creating a container
+#### Step 3 - Example services
+
+Next we create out example services.
+
+File ***services/my-service.ts***
+```ts
+export interface MyServiceInterface {
+    hello: string;
+}
+
+export class MyService implements MyServiceInterface{
+    hello = "world";
+}
+```
+
+File ***services/my-other-service.ts***
+```ts
+export interface MyOtherServiceInterface {
+    random: number;
+}
+
+export class MyOtherService implements MyOtherServiceInterface {
+    random = Math.random();
+}
+```
+
+#### Step 4 - Creating a container
 
 Next we need a container to bind our dependencies to. Let's create the file ***services/container.ts***
 
@@ -279,44 +305,42 @@ container.bind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherService);
 export {container, TYPE, inject};
 ```
 
-#### Step 4 - Injecting dependencies
+#### Step 5 - Injecting dependencies
 
 Lets create a ***example.ts*** file in our source root:
  
 ```ts
-import {container, TYPE, inject} from "./services/container";
+import {TYPE, inject} from "./service/container";
 import {MyServiceInterface} from "./service/my-service";
 import {MyOtherServiceInterface} from "./service/my-other-service";
 
 class Example {
     @inject(TYPE.MyService)
     readonly myService!: MyServiceInterface;
-    
-    @inject(TYPE.MyOtherSerice)
+
+    @inject(TYPE.MyOtherService)
     readonly myOtherService!: MyOtherServiceInterface;
 }
 
 const example = new Example();
 
 console.log(example.myService);
-console.log(example.myOtherSerice);
+console.log(example.myOtherService);
+console.log(example.myOtherService);
 ```
 
 If we run this example we should see the content of our example services.
 
 The dependencies (services) will injected on the first call. This means if you rebind the service after
-accessing the properties of the Example class, it will not resolve the new service. If you want a new 
+accessing the properties of the Example class, it will not resolve a new service. If you want a new 
 service each time you call `example.myService` you have to add the `NOCACHE` tag:
 
 ```ts
-import {container, TYPE, inject} from "./services/container";
+// [...]
 import {NOCACHE} from "@owja/ioc";
 
-// [...]
-
 class Example {
-    @inject(TYPE.MyService, NOCACHE)
-    readonly myService!: MyServiceInterface;
+    // [...]
     
     @inject(TYPE.MyOtherSerice, NOCACHE)
     readonly myOtherService!: MyOtherServiceInterface;
@@ -325,25 +349,67 @@ class Example {
 // [...]
 ```
 
+In this case the last two `console.log()` outputs should show different numbers.
+
 ## Unit testing with IoC
 
-We can snapshot and restore a container for unit testing.
+For unit testing we first create our mocks
+
+***test/my-service-mock.ts***
+```ts
+import {MyServiceInterface} from "../service/my-service";
+
+export class MyServiceMock implements MyServiceInterface {
+    hello = "test";    
+}
+```
+
+***test/my-other-service-mock.ts***
+```ts
+import {MyOtherServiceInterface} from "../service/my-other-service";
+
+export class MyOtherServiceMock implements MyOtherServiceInterface {
+    random = 9;
+}
+```
+
+Within the tests we can snapshot and restore a container.
 We are able to make multiple snapshots in a row too.
 
+File ***example.test.ts***
 ```ts
-import {container, TYPE} from "./services/container";
+import {container, TYPE} from "./service/container";
+import {MyServiceInterface} from "./service/my-service";
+import {MyOtherServiceInterface} from "./service/my-other-service";
 
-beforeEach(() => {
-    container.snapshot();
-});
+import {MyServiceMock} from "./test/my-service-mock";
+import {MyOtherServiceMock} from "./test/my-other-service-mock";
 
-afterEach(() => {
-    container.restore();
-}
+import {Example} from "./example";
 
-test("can do something", () => {
-    container.rebind<MyServiceMock>(TYPE.MySerice).toValue(new MyServiceMock());
-    const mock = container.get<MyServiceMock>(TYPE.MySerice);
+describe("Example", () => {
+    
+    let example: Example;
+    beforeEach(() => {
+        container.snapshot();
+        container.rebind<MyServiceInterface>(TYPE.MyService).to(MyServiceMock);
+        container.rebind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherServiceMock);
+
+        example = new Example();
+    });
+
+    afterEach(() => {
+        container.restore();
+    });
+
+    test("should return \"test\"", () => {
+        expect(example.myService.hello).toBe("test");
+    });
+
+    test("should return \"9\"", () => {
+        expect(example.myOtherService.random).toBe(9);
+    });
+    
 });
 ```
 

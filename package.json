@@ -50,6 +50,7 @@
     "regex": "^_"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "!/dist/example"
   ]
 }
