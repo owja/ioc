@@ -34,17 +34,17 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "CC-BY-4.0",
   "devDependencies": {
-    "@types/jest": "^24.0.15",
-    "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.2",
-    "eslint": "^5.16.0",
-    "eslint-plugin-jest": "^22.6.4",
-    "jest": "^24.8.0",
-    "microbundle": "^0.12.0-next.3",
+    "@types/jest": "^24.0.20",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "eslint": "^6.6.0",
+    "eslint-plugin-jest": "^22.20.1",
+    "jest": "^24.9.0",
+    "microbundle": "^0.12.0-next.6",
     "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.2"
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
   },
   "mangle": {
     "regex": "^_"
