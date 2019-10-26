@@ -53,7 +53,7 @@ describe("Container", () => {
         }
         container.bind<IExampleConstructable>(exampleSymbol).to(
             class implements IExampleConstructable {
-                count: number = 1;
+                count = 1;
                 hello() {
                     return `world ${this.count++}`;
                 }
@@ -73,7 +73,7 @@ describe("Container", () => {
             .bind<IExampleConstructable>(exampleSymbol)
             .to(
                 class implements IExampleConstructable {
-                    count: number = 1;
+                    count = 1;
                     hello() {
                         return `world ${this.count++}`;
                     }

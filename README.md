@@ -7,9 +7,6 @@
 [![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs.svg?compression=gzip&label=size&max=1000&softmax=800&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
-It is currently work in progress and in unstable beta phase
-but the API should not change anymore before 1.0.0 stable release
-will arrive.
 
 ## Features
 
@@ -18,7 +15,7 @@ will arrive.
 * Less Features but **straight forward**
 * Can bind dependencies as **classes**, **factories** and **static values**
 * Supports binding in **singleton scope**
-* **Cached** - Resolves only once in each dependency requesting class by default
+* **Cached** - Resolves only once in each dependent class by default
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
@@ -30,8 +27,8 @@ will arrive.
 
 ### Creating a container
 
-The container is the place where all dependencies get bound to. We can have
-multiple containers in our project in parallel.
+The container is the place where all dependencies get bound to. It is possible to have
+multiple container in our project in parallel.
 
 ```ts
 import {Container} from "@owja/ioc";
@@ -78,7 +75,7 @@ This is always like singleton scope, but it should be avoid to instantiate
 dependencies here. If they are circular dependencies, they will fail. 
 
 ```ts
-container.bind<ServiceInterface>(symbol).toValue(new Service());
+container.bind<ServiceInterface>(symbol).toValue(new Service()); // Bad, should be avoid
 container.bind<string>(symbol).toValue("just a string");
 container.bind<() => string>(symbol).toValue(() => "i am a function");
 ```
@@ -103,12 +100,20 @@ container.remove(symbol);
 
 ### Getting a dependency
 
-Getting dependencies without `inject` decorators are only meant for **unit tests**. This is also
-the internal way the `inject` decorator gets the dependency it has to resolve.
+Getting dependencies without `@inject` decorators trough `container.get()` is only meant for **unit tests**. 
+This is also the internal way how the `@inject` decorator and the functions `wire()` and `resolve()` are getting the
+dependency.
  
 ```ts
 container.get<Interface>(symbol);
 ```
+
+To get a dependency without `@inject` decorator in production code use `wire()` or `resolve()`. Using `container.get()`
+directly to getting dependencies can result in infinite loops with circular dependencies when called inside of
+constructors. In addition `container.get()` does not respect the cache. 
+
+> **Important Note:**  You should avoid accessing the dependencies from any constructor. With circular dependencies
+> this can result in a infinite loop.
 
 ### Snapshot & Restore
 
@@ -189,7 +194,7 @@ Then we can resolve the dependency in classes and even functions.
 
 ```ts
 class Example {
-    readonly service = resolve<Interface>(symbol)
+    private readonly service = resolve<Interface>(symbol);
     
     method() {
         this.service().doSomething();
@@ -199,7 +204,7 @@ class Example {
 
 ```ts
 function Example() {
-    const service = resolve<Interface>(symbol)
+    const service = resolve<Interface>(symbol);
     service().doSomething();
 }
 ```
@@ -208,7 +213,7 @@ function Example() {
 > The dependency is not assigned directly to the property/constant.
 > If we want direct access we can use `container.get()` but we should avoid
 > using `get()` inside of classes because we then loose the lazy dependency
-> resolving/injection behavior. 
+> resolving/injection behavior and caching.
 
 ## The `symbol`
 
@@ -243,17 +248,43 @@ export const TYPE = {
 npm install --save-dev @owja/ioc
 ``` 
 
-#### Step 2 - Create symbols for our dependencies
+#### Step 2 - Creating symbols for our dependencies
 
 Now we create the folder ***services*** and add the new file ***services/types.ts***:
 ```ts
 export const TYPE = {
-    "MyService" = Symbol("MyService"),
-    "MyOtherService" = Symbol("MyOtherService"),
+    MyService: Symbol("MyService"),
+    MyOtherService: Symbol("MyOtherService"),
 };
 ```
 
-#### Step 3 - Creating a container
+#### Step 3 - Example services
+
+Next we create out example services.
+
+File ***services/my-service.ts***
+```ts
+export interface MyServiceInterface {
+    hello: string;
+}
+
+export class MyService implements MyServiceInterface{
+    hello = "world";
+}
+```
+
+File ***services/my-other-service.ts***
+```ts
+export interface MyOtherServiceInterface {
+    random: number;
+}
+
+export class MyOtherService implements MyOtherServiceInterface {
+    random = Math.random();
+}
+```
+
+#### Step 4 - Creating a container
 
 Next we need a container to bind our dependencies to. Let's create the file ***services/container.ts***
 
@@ -274,44 +305,42 @@ container.bind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherService);
 export {container, TYPE, inject};
 ```
 
-#### Step 4 - Injecting dependencies
+#### Step 5 - Injecting dependencies
 
 Lets create a ***example.ts*** file in our source root:
  
 ```ts
-import {container, TYPE, inject} from "./services/container";
+import {TYPE, inject} from "./service/container";
 import {MyServiceInterface} from "./service/my-service";
 import {MyOtherServiceInterface} from "./service/my-other-service";
 
 class Example {
     @inject(TYPE.MyService)
     readonly myService!: MyServiceInterface;
-    
-    @inject(TYPE.MyOtherSerice)
+
+    @inject(TYPE.MyOtherService)
     readonly myOtherService!: MyOtherServiceInterface;
 }
 
 const example = new Example();
 
 console.log(example.myService);
-console.log(example.myOtherSerice);
+console.log(example.myOtherService);
+console.log(example.myOtherService);
 ```
 
 If we run this example we should see the content of our example services.
 
 The dependencies (services) will injected on the first call. This means if you rebind the service after
-accessing the properties of the Example class, it will not resolve the new service. If you want a new 
+accessing the properties of the Example class, it will not resolve a new service. If you want a new 
 service each time you call `example.myService` you have to add the `NOCACHE` tag:
 
 ```ts
-import {container, TYPE, inject} from "./services/container";
+// [...]
 import {NOCACHE} from "@owja/ioc";
 
-// [...]
-
 class Example {
-    @inject(TYPE.MyService, NOCACHE)
-    readonly myService!: MyServiceInterface;
+    // [...]
     
     @inject(TYPE.MyOtherSerice, NOCACHE)
     readonly myOtherService!: MyOtherServiceInterface;
@@ -320,32 +349,74 @@ class Example {
 // [...]
 ```
 
+In this case the last two `console.log()` outputs should show different numbers.
+
 ## Unit testing with IoC
 
-We can snapshot and restore a container for unit testing.
+For unit testing we first create our mocks
+
+***test/my-service-mock.ts***
+```ts
+import {MyServiceInterface} from "../service/my-service";
+
+export class MyServiceMock implements MyServiceInterface {
+    hello = "test";    
+}
+```
+
+***test/my-other-service-mock.ts***
+```ts
+import {MyOtherServiceInterface} from "../service/my-other-service";
+
+export class MyOtherServiceMock implements MyOtherServiceInterface {
+    random = 9;
+}
+```
+
+Within the tests we can snapshot and restore a container.
 We are able to make multiple snapshots in a row too.
 
+File ***example.test.ts***
 ```ts
-import {container, TYPE} from "./services/container";
+import {container, TYPE} from "./service/container";
+import {MyServiceInterface} from "./service/my-service";
+import {MyOtherServiceInterface} from "./service/my-other-service";
 
-beforeEach(() => {
-    container.snapshot();
-});
+import {MyServiceMock} from "./test/my-service-mock";
+import {MyOtherServiceMock} from "./test/my-other-service-mock";
 
-afterEach(() => {
-    container.restore();
-}
+import {Example} from "./example";
 
-test("can do something", () => {
-    container.rebind<MyServiceMock>(TYPE.MySerice).to(MyServiceMock);
-    const mock = container.get<MyServiceMock>(TYPE.MySerice);
+describe("Example", () => {
+    
+    let example: Example;
+    beforeEach(() => {
+        container.snapshot();
+        container.rebind<MyServiceInterface>(TYPE.MyService).to(MyServiceMock);
+        container.rebind<MyOtherServiceInterface>(TYPE.MyOtherService).to(MyOtherServiceMock);
+
+        example = new Example();
+    });
+
+    afterEach(() => {
+        container.restore();
+    });
+
+    test("should return \"test\"", () => {
+        expect(example.myService.hello).toBe("test");
+    });
+
+    test("should return \"9\"", () => {
+        expect(example.myOtherService.random).toBe(9);
+    });
+    
 });
 ```
 
 ## Development
 
-We are working on the first stable release. Current state of development can be seen in our
-[Github Project](https://github.com/owja/ioc/projects/1) for the first release.
+Current state of development can be seen in our
+[Github Projects](https://github.com/owja/ioc/projects).
 
 ## Inspiration
 

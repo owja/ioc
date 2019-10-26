@@ -86,7 +86,7 @@ class Circular2 implements ICircular {
 class CircularFail1 implements ICircular {
     @inject(TYPE.circularFail2)
     circular!: ICircular;
-    circularName: string = "";
+    circularName = "";
     constructor(public name: string) {
         this.circularName = this.circular.name;
     }
@@ -95,7 +95,7 @@ class CircularFail1 implements ICircular {
 class CircularFail2 implements ICircular {
     @inject(TYPE.circularFail1)
     circular!: ICircular;
-    circularName: string = "";
+    circularName = "";
     constructor(public name: string) {
         this.circularName = this.circular.name;
     }
