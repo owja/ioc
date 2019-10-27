@@ -54,16 +54,7 @@
     "!/dist/example"
   ],
   "browserslist": [
-    "chrome >= 71",
-    "firefox >= 64",
-    "safari >= 12",
-    "edge >= 18",
-    "opera >= 57",
-    "last 1 and_ff versions",
-    "last 1 and_chr versions",
-    "last 1 and_uc versions",
-    "iOS >= 12.1",
-    "samsung >= 9",
+    "since 2018-11 and >0%",
     "node >= 12"
   ]
 }
