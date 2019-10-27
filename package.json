@@ -54,12 +54,16 @@
     "!/dist/example"
   ],
   "browserslist": [
-    "last 2 Chrome versions",
-    "last 2 Firefox versions",
-    "last 2 Safari versions",
-    "last 1 Edge versions",
-    "last 2 iOS versions",
-    "last 2 and_ff versions",
-    "last 2 and_chr versions"
+    "chrome >= 71",
+    "firefox >= 64",
+    "safari >= 12",
+    "edge >= 18",
+    "opera >= 57",
+    "last 1 and_ff versions",
+    "last 1 and_chr versions",
+    "last 1 and_uc versions",
+    "iOS >= 12.1",
+    "samsung >= 9",
+    "node >= 12"
   ]
 }
