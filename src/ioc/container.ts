@@ -58,7 +58,7 @@ export class Container {
 
     remove(type: symbol): Container {
         if (this._registry.get(type) === undefined) {
-            throw `${type.toString()} was never bound`;
+            throw `nothing is bound to ${type.toString()}`;
         }
 
         this._registry.delete(type);
@@ -70,7 +70,7 @@ export class Container {
         const regItem = this._registry.get(type);
 
         if (regItem === undefined) {
-            throw `nothing bound to ${type.toString()}`;
+            throw `nothing is bound to ${type.toString()}`;
         }
 
         const {object, factory, value, cache, singleton} = regItem;

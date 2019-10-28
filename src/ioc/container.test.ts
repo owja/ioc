@@ -131,7 +131,7 @@ describe("Container", () => {
     });
 
     test("can only rebind to a symbol if it was bound before", () => {
-        expect(() => container.rebind(exampleSymbol)).toThrow("Symbol(example) was never bound");
+        expect(() => container.rebind(exampleSymbol)).toThrow("nothing is bound to Symbol(example)");
     });
 
     test("can remove a symbol", () => {
@@ -139,7 +139,7 @@ describe("Container", () => {
         expect(container.get(exampleSymbol)).toBe("hello world");
 
         container.remove(exampleSymbol);
-        expect(() => container.get(exampleSymbol)).toThrow("nothing bound to Symbol(example)");
+        expect(() => container.get(exampleSymbol)).toThrow("nothing is bound to Symbol(example)");
     });
 
     test("can snapshot and restore the registry", () => {
