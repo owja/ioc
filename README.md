@@ -430,6 +430,6 @@ but has other goals:
 
 ## License
 
-License under [Creative Commons Attribution 4.0 International](https://spdx.org/licenses/CC-BY-4.0.html)
+**MIT**
 
 Copyright © 2019 Hauke Broer
