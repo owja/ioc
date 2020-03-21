@@ -41,7 +41,7 @@
     "eslint-plugin-jest": "^22.20.1",
     "jest": "^24.9.0",
     "microbundle": "^0.11.0",
-    "prettier": "^1.18.2",
+    "prettier": "^2.0.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
