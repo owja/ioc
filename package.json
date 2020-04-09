@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
-  "module": "dist/ioc.mjs",
+  "module": "dist/ioc.module.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "keywords": [
@@ -34,17 +34,17 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^24.0.20",
-    "@typescript-eslint/eslint-plugin": "^2.5.0",
-    "@typescript-eslint/parser": "^2.5.0",
-    "eslint": "^6.6.0",
-    "eslint-plugin-jest": "^22.20.1",
-    "jest": "^24.9.0",
+    "@types/jest": "^25.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.3.0",
     "microbundle": "^0.11.0",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.1.0",
-    "ts-node": "^8.4.1",
-    "typescript": "^3.6.4"
+    "prettier": "1.19.1",
+    "ts-jest": "^25.3.1",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
   },
   "mangle": {
     "regex": "^_"
