@@ -1,10 +1,20 @@
 import {Container} from "./container";
 
+interface AnyObject {
+    [prop: string]: any;
+}
+
 export const NOCACHE = Symbol("NOCACHE");
 
-function define(target: object, property: string, container: Container, type: symbol, args: symbol[]) {
+function define<T extends AnyObject>(
+    target: T,
+    property: keyof T & string,
+    container: Container,
+    type: symbol,
+    args: symbol[],
+) {
     Object.defineProperty(target, property, {
-        get: function() {
+        get: function () {
             const value = container.get<any>(type);
             if (args.indexOf(NOCACHE) === -1) {
                 Object.defineProperty(this, property, {
@@ -20,7 +30,7 @@ function define(target: object, property: string, container: Container, type: sy
 }
 
 function inject(type: symbol, container: Container, args: symbol[]) {
-    return (target: object, property: string): void => {
+    return <T extends AnyObject>(target: T, property: keyof T & string): void => {
         define(target, property, container, type, args);
     };
 }
@@ -32,7 +42,7 @@ export function createDecorator(container: Container) {
 }
 
 export function createWire(container: Container) {
-    return <T extends object>(target: T, property: keyof T & string, type: symbol, ...args: symbol[]) => {
+    return <T extends AnyObject>(target: T, property: keyof T & string, type: symbol, ...args: symbol[]) => {
         define(target, property, container, type, args);
     };
 }

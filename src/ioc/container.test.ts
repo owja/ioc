@@ -34,10 +34,7 @@ describe("Container", () => {
         const spy = jest.fn();
         spy.mockReturnValue("test");
 
-        container
-            .bind<string>(exampleSymbol)
-            .toFactory(spy)
-            .inSingletonScope();
+        container.bind<string>(exampleSymbol).toFactory(spy).inSingletonScope();
 
         container.get(exampleSymbol);
         container.get(exampleSymbol);

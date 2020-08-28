@@ -1,11 +1,22 @@
 {
   "name": "@owja/ioc",
-  "version": "1.0.1",
+  "version": "2.0.0-alpha.1",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.module.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "deno": "./src/index.ts",
+      "browser": "./dist/ioc.module.js",
+      "require": "./dist/ioc.js",
+      "import": "./dist/ioc.mjs",
+      "default": "./dist/ioc.module.js"
+    },
+    "./package.json": "./package.json",
+    "./": "./"
+  },
   "keywords": [
     "typescript",
     "dependency injection",
@@ -15,13 +26,16 @@
     "di"
   ],
   "scripts": {
-    "build": "(rm -r dist/* || true) && microbundle --format es,cjs",
+    "prepack": "npm run build",
+    "prebuild": "npm run clean",
+    "build": "microbundle --format es,cjs",
+    "postbuild": "shx cp dist/ioc.module.js dist/ioc.mjs",
+    "clean": "shx rm -rf dist && shx rm -f owja-ioc-*.tgz && shx rm -rf coverage",
     "test": "jest",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --ext .ts ./src --fix",
     "prettier": "prettier src/**/*.ts --check",
-    "prettier:fix": "prettier src/**/*.ts --write",
-    "release": "npm run build && npm run lint && npm run test && npm run prettier && npm login && npm publish --access public"
+    "prettier:fix": "prettier src/**/*.ts --write"
   },
   "repository": {
     "type": "git",
@@ -34,23 +48,29 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^25.2.1",
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
-    "eslint": "^6.8.0",
+    "@types/jest": "^26.0.10",
+    "@typescript-eslint/eslint-plugin": "^3.10.1",
+    "@typescript-eslint/parser": "^3.10.1",
+    "eslint": "^7.7.0",
     "eslint-plugin-jest": "^23.8.2",
-    "jest": "^25.3.0",
-    "microbundle": "^0.11.0",
-    "prettier": "1.19.1",
-    "ts-jest": "^25.3.1",
-    "ts-node": "^8.8.2",
-    "typescript": "^3.8.3"
+    "jest": "^26.4.2",
+    "microbundle": "^0.12.3",
+    "prettier": "2.1.1",
+    "shx": "^0.3.2",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   },
   "mangle": {
     "regex": "^_"
   },
   "files": [
     "/dist",
-    "!/dist/example"
+    "!/dist/example",
+    "/src"
+  ],
+  "browserslist": [
+    "since 2018-11 and >0%",
+    "node >= 12"
   ]
 }
