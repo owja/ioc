@@ -2,9 +2,8 @@
 
 [![npm version](https://img.shields.io/npm/v/@owja/ioc.svg)](https://badge.fury.io/js/%40owja%2Fioc)
 [![codecov](https://codecov.io/gh/owja/ioc/branch/master/graph/badge.svg)](https://codecov.io/gh/owja/ioc)
-[![Greenkeeper badge](https://badges.greenkeeper.io/owja/ioc.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
-[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.mjs.svg?compression=gzip&label=size&max=1000&softmax=800&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
+[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.module.js.svg?compression=brotli&label=size&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
 
 This library implements dependency injection for javascript.
 
@@ -19,7 +18,7 @@ This library implements dependency injection for javascript.
 * **Cache can switched off** directly at the inject decorator
 * Made with **unit testing** in mind
 * Supports dependency **rebinding** and container **snapshots** and **restores**
-* **Lightweight** - Just around **750 Byte gzip** and **650 Byte brotli** compressed
+* **Lightweight** - Below 1kb brotli/gzip compressed
 * Does **NOT** need reflect-metadata which size is around 50 kb
 * 100% written in **Typescript**
 
