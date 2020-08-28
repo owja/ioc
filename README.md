@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@owja/ioc.svg)](https://badge.fury.io/js/%40owja%2Fioc)
 [![codecov](https://codecov.io/gh/owja/ioc/branch/master/graph/badge.svg)](https://codecov.io/gh/owja/ioc)
 [![Build Status](https://travis-ci.org/owja/ioc.svg?branch=master)](https://travis-ci.org/owja/ioc)
-[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.module.js.svg?compression=brotli&label=size&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.mjs)
+[![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.module.js.svg?compression=brotli&label=size&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.module.js)
 
 This library implements dependency injection for javascript.
 
