@@ -1,9 +1,11 @@
 import {Container} from "./container";
+import {token} from "./token";
 
-describe("Container", () => {
+describe("Container using symbols", () => {
     let container: Container;
 
     const exampleSymbol = Symbol.for("example");
+    const stringToken = token<string>("exampleStr");
 
     beforeEach(() => {
         container = new Container();
@@ -16,6 +18,12 @@ describe("Container", () => {
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 2");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 3");
+
+        container.bind(stringToken).toFactory(() => `hello world ${count++}`);
+
+        expect(container.get(stringToken)).toBe("hello world 4");
+        expect(container.get(stringToken)).toBe("hello world 5");
+        expect(container.get(stringToken)).toBe("hello world 6");
     });
 
     test("can bind a factory in singleton scope", () => {
@@ -28,6 +36,16 @@ describe("Container", () => {
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 1");
+
+        count = 1;
+        container
+            .bind(stringToken)
+            .toFactory(() => `hello world ${count++}`)
+            .inSingletonScope();
+
+        expect(container.get(stringToken)).toBe("hello world 1");
+        expect(container.get(stringToken)).toBe("hello world 1");
+        expect(container.get(stringToken)).toBe("hello world 1");
     });
 
     test("should use cached data in singleton scope", () => {
@@ -60,6 +78,21 @@ describe("Container", () => {
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
         expect(container.get<IExampleConstructable>(exampleSymbol).hello()).toBe("world 1");
+
+        const exampleToken = token<IExampleConstructable>("example");
+
+        container.bind<IExampleConstructable>(exampleToken).to(
+            class implements IExampleConstructable {
+                count = 1;
+                hello() {
+                    return `world ${this.count++}`;
+                }
+            },
+        );
+
+        expect(container.get(exampleToken).hello()).toBe("world 1");
+        expect(container.get(exampleToken).hello()).toBe("world 1");
+        expect(container.get(exampleToken).hello()).toBe("world 1");
     });
 
     test("can bind a constructable in singleton scope", () => {
@@ -86,11 +119,18 @@ describe("Container", () => {
     test("can bind a constant value", () => {
         container.bind<string>(exampleSymbol).toValue("constant world");
         expect(container.get<string>(exampleSymbol)).toBe("constant world");
+
+        container.bind(stringToken).toValue("constant world");
+        expect(container.get(stringToken)).toBe("constant world");
     });
 
     test("can bind a constant value of zero", () => {
         container.bind<number>(exampleSymbol).toValue(0);
         expect(container.get<string>(exampleSymbol)).toBe(0);
+
+        const numToken = token<number>("number");
+        container.bind(numToken).toValue(0);
+        expect(container.get(numToken)).toBe(0);
     });
 
     test("can bind a negative constant value", () => {
@@ -112,6 +152,11 @@ describe("Container", () => {
     test("can not bind to a symbol more than once", () => {
         container.bind(exampleSymbol);
         expect(() => container.bind(exampleSymbol)).toThrow("object can only bound once: Symbol(example)");
+    });
+
+    test("can not bind to a token more than once", () => {
+        container.bind(stringToken);
+        expect(() => container.bind(stringToken)).toThrow("object can only bound once: Token(Symbol(exampleStr))");
     });
 
     test("can not get unbound dependency", () => {
