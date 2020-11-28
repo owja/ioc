@@ -1,4 +1,7 @@
+import { token } from "../../ioc/token";
+import { MyOtherService } from "./my-other-service";
+
 export const TYPE = {
     MyService: Symbol("MyService"),
-    MyOtherService: Symbol("MyOtherService"),
+    MyOtherService: token<MyOtherService>("MyOtherService"),
 };
