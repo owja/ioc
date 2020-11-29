@@ -1,3 +1,5 @@
+import {getType, MaybeToken, stringifyToken} from "./token";
+
 interface IConfig<T> {
     object?: INewAble<T>;
     factory?: Factory<T>;
@@ -48,29 +50,29 @@ export class Container {
     private _registry: Registry = new Map<symbol, IConfig<any>>();
     private _snapshots: Registry[] = [];
 
-    bind<T = never>(type: symbol): Bind<T> {
-        return new Bind<T>(this._add<T>(type));
+    bind<T = never>(token: MaybeToken<T>): Bind<T> {
+        return new Bind<T>(this._add<T>(token));
     }
 
-    rebind<T = never>(type: symbol): Bind<T> {
-        return this.remove(type).bind<T>(type);
+    rebind<T = never>(token: MaybeToken<T>): Bind<T> {
+        return this.remove(token).bind<T>(token);
     }
 
-    remove(type: symbol): Container {
-        if (this._registry.get(type) === undefined) {
-            throw `${type.toString()} was never bound`;
+    remove(token: MaybeToken): Container {
+        if (this._registry.get(getType(token)) === undefined) {
+            throw `${stringifyToken(token)} was never bound`;
         }
 
-        this._registry.delete(type);
+        this._registry.delete(getType(token));
 
         return this;
     }
 
-    get<T = never>(type: symbol): T {
-        const regItem = this._registry.get(type);
+    get<T = never>(token: MaybeToken<T>): T {
+        const regItem = this._registry.get(getType(token));
 
         if (regItem === undefined) {
-            throw `nothing bound to ${type.toString()}`;
+            throw `nothing bound to ${stringifyToken(token)}`;
         }
 
         const {object, factory, value, cache, singleton} = regItem;
@@ -86,7 +88,7 @@ export class Container {
         if (typeof object !== "undefined") return cacheItem(() => new object());
         if (typeof factory !== "undefined") return cacheItem(() => factory());
 
-        throw `nothing is bound to ${type.toString()}`;
+        throw `nothing is bound to ${stringifyToken(token)}`;
     }
 
     snapshot(): Container {
@@ -99,13 +101,13 @@ export class Container {
         return this;
     }
 
-    private _add<T>(type: symbol): IConfig<T> {
-        if (this._registry.get(type) !== undefined) {
-            throw `object can only bound once: ${type.toString()}`;
+    private _add<T>(token: MaybeToken<T>): IConfig<T> {
+        if (this._registry.get(getType(token)) !== undefined) {
+            throw `object can only bound once: ${stringifyToken(token)}`;
         }
 
         const conf = {singleton: false};
-        this._registry.set(type, conf);
+        this._registry.set(getType(token), conf);
 
         return conf;
     }
