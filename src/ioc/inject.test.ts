@@ -39,6 +39,8 @@ class Parent implements ITestClass {
     childTwo!: ITestClass;
 }
 
+class ExtendedClassTest extends Parent {}
+
 class ChildOne implements ITestClass {
     name = "child one";
     @inject(TYPE.child2)
@@ -164,15 +166,21 @@ describe("Injector", () => {
         expect(instance.childTwo.name).toBe("child two");
     });
 
+    test("inject should resolve in parent class if extended", () => {
+        const ext = new ExtendedClassTest();
+        expect(ext.childOne.name).toBe("child one");
+        expect(ext.childTwo.name).toBe("child two");
+    });
+
     test("can inject deep", () => {
-        expect((instance.childOne.childOne as any).name).toBe("child two");
-        expect((instance.childOne.childTwo as any).name).toBe("child three");
-        expect((instance.childOne.childTwo as any).childOne.name).toBe("child four");
+        expect(instance.childOne.childOne?.name).toBe("child two");
+        expect(instance.childOne.childTwo?.name).toBe("child three");
+        expect(instance.childOne.childTwo?.childOne?.name).toBe("child four");
     });
 
     test("can inject parent", () => {
-        expect((instance.childOne.childOne as any).childOne.name).toBe("child one");
-        expect((instance.childOne.childTwo as any).childTwo.name).toBe("parent");
+        expect(instance.childOne.childOne?.childOne?.name).toBe("child one");
+        expect(instance.childOne.childTwo?.childTwo?.name).toBe("parent");
     });
 
     test("can inject a circular dependency when accessing the dependency outside of constructor", () => {

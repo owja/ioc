@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ES2021",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -20,8 +20,5 @@
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "**/*.test.ts"
   ]
 }
