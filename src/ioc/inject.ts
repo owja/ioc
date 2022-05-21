@@ -1,14 +1,10 @@
 import {Container} from "./container";
 
-interface AnyObject {
-    [prop: string]: any;
-}
-
 export const NOCACHE = Symbol("NOCACHE");
 
-function define<T extends AnyObject>(
+function define<T>(
     target: T,
-    property: keyof T & string,
+    property: keyof T,
     container: Container,
     type: symbol,
     args: symbol[],
@@ -30,7 +26,7 @@ function define<T extends AnyObject>(
 }
 
 function inject(type: symbol, container: Container, args: symbol[]) {
-    return <T extends AnyObject>(target: T, property: keyof T & string): void => {
+    return <T>(target: T, property: keyof T): void => {
         define(target, property, container, type, args);
     };
 }
@@ -42,13 +38,13 @@ export function createDecorator(container: Container) {
 }
 
 export function createWire(container: Container) {
-    return <T extends AnyObject>(target: T, property: keyof T & string, type: symbol, ...args: symbol[]) => {
+    return <T>(target: T, property: keyof T, type: symbol, ...args: symbol[]) => {
         define(target, property, container, type, args);
     };
 }
 
 export function createResolve(container: Container) {
-    return <T = never>(type: symbol, ...args: symbol[]) => {
+    return <T = unknown>(type: symbol, ...args: symbol[]) => {
         let value: T;
         return (): T => {
             if (args.indexOf(NOCACHE) !== -1 || value === undefined) {
