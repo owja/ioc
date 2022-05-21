@@ -45,6 +45,9 @@
   "author": "Hauke Broer <info@owja.de>",
   "license": "MIT",
   "devDependencies": {
+    "@owja/browserslist-config": "^1.0.1",
+    "@owja/prettier-config": "^1.0.2",
+    "@owja/typescript-config": "^1.0.2",
     "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
@@ -52,10 +55,8 @@
     "eslint-plugin-jest": "^26.2.2",
     "jest": "^28.1.0",
     "microbundle": "^0.15.0",
-    "prettier": "2.6.2",
     "shx": "^0.3.4",
-    "ts-jest": "^28.0.2",
-    "typescript": "^4.6.4"
+    "ts-jest": "^28.0.2"
   },
   "mangle": {
     "regex": "^_"
@@ -69,7 +70,7 @@
     "!/**/*.test.d.ts"
   ],
   "browserslist": [
-    "since 2021 and > .1% and not dead",
-    "node >= 16"
-  ]
+    "extends @owja/browserslist-config"
+  ],
+  "prettier": "@owja/prettier-config"
 }
