@@ -1,10 +1,10 @@
 import {Container} from "./container";
-import {createDecorator, createResolve, createWire, NOCACHE} from "./inject";
+import {NOCACHE} from "./symbol";
+
+import {createDecorator} from "./decorator";
 
 const container = new Container();
 const inject = createDecorator(container);
-const wire = createWire(container);
-const resolve = createResolve(container);
 
 interface ITestClass {
     name: string;
@@ -110,37 +110,6 @@ class CacheTest {
     notCached!: number;
 }
 
-class WireTest {
-    cached!: number;
-    notCached!: number;
-
-    constructor() {
-        wire(this, "cached", TYPE.cacheTest);
-        wire(this, "notCached", TYPE.cacheTest, NOCACHE);
-    }
-}
-
-class ResolveTest {
-    cached = resolve<number>(TYPE.cacheTest);
-    notCached = resolve<number>(TYPE.cacheTest, NOCACHE);
-}
-
-function ResolveTestFunctionCached() {
-    const cached = resolve<number>(TYPE.cacheTest);
-    cached();
-    cached();
-    cached();
-    return cached();
-}
-
-function ResolveTestFunctionCacheNoCache() {
-    const cached = resolve<number>(TYPE.cacheTest, NOCACHE);
-    cached();
-    cached();
-    cached();
-    return cached();
-}
-
 container.bind<ITestClass>(TYPE.parent).to(Parent);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
@@ -237,71 +206,5 @@ describe("Injector", () => {
 
         // final proof
         expect(cacheTest1.notCached).toBe(5);
-    });
-
-    test("resolves new data with new instance even with cache enabled (with wire)", () => {
-        count = 0;
-        const cacheTest1 = new WireTest();
-        expect(cacheTest1.cached).toBe(1);
-        expect(cacheTest1.cached).toBe(1);
-
-        count = 9;
-        const cacheTest2 = new WireTest();
-        expect(cacheTest2.cached).toBe(10);
-        expect(cacheTest2.cached).toBe(10);
-
-        // final proof
-        expect(cacheTest1.cached).toBe(1);
-    });
-
-    test("resolves new data with new instance even with cache disabled (with wire)", () => {
-        count = 0;
-        const cacheTest1 = new WireTest();
-        const cacheTest2 = new WireTest();
-        expect(cacheTest1.notCached).toBe(1);
-        expect(cacheTest1.notCached).toBe(2);
-        expect(cacheTest2.notCached).toBe(3);
-        expect(cacheTest2.notCached).toBe(4);
-
-        // final proof
-        expect(cacheTest1.notCached).toBe(5);
-    });
-
-    test("resolves new data with new instance even with cache enabled (with resolve)", () => {
-        count = 0;
-        const cacheTest1 = new ResolveTest();
-        expect(cacheTest1.cached()).toBe(1);
-        expect(cacheTest1.cached()).toBe(1);
-
-        count = 9;
-        const cacheTest2 = new ResolveTest();
-        expect(cacheTest2.cached()).toBe(10);
-        expect(cacheTest2.cached()).toBe(10);
-
-        // final proof
-        expect(cacheTest1.cached()).toBe(1);
-    });
-
-    test("resolves new data with new instance even with cache disabled (with resolve)", () => {
-        count = 0;
-        const cacheTest1 = new ResolveTest();
-        const cacheTest2 = new ResolveTest();
-        expect(cacheTest1.notCached()).toBe(1);
-        expect(cacheTest1.notCached()).toBe(2);
-        expect(cacheTest2.notCached()).toBe(3);
-        expect(cacheTest2.notCached()).toBe(4);
-
-        // final proof
-        expect(cacheTest1.notCached()).toBe(5);
-    });
-
-    test("a function can use resolve", () => {
-        count = 0;
-        expect(ResolveTestFunctionCached()).toBe(1);
-    });
-
-    test("a function can use resolve with cache disabled", () => {
-        count = 0;
-        expect(ResolveTestFunctionCacheNoCache()).toBe(4);
     });
 });

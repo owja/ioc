@@ -1,11 +1,9 @@
 import {Container, createDecorator, createResolve, createWire, NOCACHE} from "./";
 import {Container as ContainerOriginal} from "./ioc/container";
-import {
-    createDecorator as createDecoratorOriginal,
-    createResolve as createResolveOriginal,
-    createWire as createWireOriginal,
-    NOCACHE as NOCACHEOriginal,
-} from "./ioc/inject";
+import {createDecorator as createDecoratorOriginal} from "./ioc/decorator";
+import {createWire as createWireOriginal} from "./ioc/wire";
+import {createResolve as createResolveOriginal} from "./ioc/resolve";
+import {NOCACHE as NOCACHEOriginal} from "./ioc/symbol";
 
 describe("Module", () => {
     test('should export "Container" class', () => {
