@@ -1,13 +1,10 @@
-module.exports =  {
+module.exports = {
     plugins: ["@typescript-eslint", "jest"],
-    parser:  "@typescript-eslint/parser",
-    extends:  [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:jest/recommended",
-    ],
-    parserOptions:  {
-        ecmaVersion:  2019,
-        sourceType:  'module',
+    parser: "@typescript-eslint/parser",
+    extends: ["plugin:@typescript-eslint/recommended", "plugin:jest/recommended"],
+    parserOptions: {
+        ecmaVersion: 2021,
+        sourceType: "module",
     },
     rules: {
         "@typescript-eslint/explicit-function-return-type": "off",
@@ -20,6 +17,6 @@ module.exports =  {
         "jest/no-focused-tests": "error",
         "jest/no-identical-title": "error",
         "jest/prefer-to-have-length": "warn",
-        "jest/valid-expect": "error"
+        "jest/valid-expect": "error",
     },
 };

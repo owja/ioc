@@ -31,8 +31,8 @@
     "test": "jest",
     "lint": "eslint --ext .ts ./src",
     "lint:fix": "eslint --ext .ts ./src --fix",
-    "prettier": "prettier src/**/*.ts --check",
-    "prettier:fix": "prettier src/**/*.ts --write"
+    "prettier": "prettier src/**/*.ts *.js --check",
+    "prettier:fix": "prettier src/**/*.ts *.js --write"
   },
   "repository": {
     "type": "git",
@@ -55,7 +55,6 @@
     "prettier": "2.6.2",
     "shx": "^0.3.4",
     "ts-jest": "^28.0.2",
-    "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
   "mangle": {
