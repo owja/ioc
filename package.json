@@ -1,21 +1,19 @@
 {
   "name": "@owja/ioc",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
-  "module": "dist/ioc.module.js",
+  "module": "dist/ioc.mjs",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "deno": "./src/index.ts",
-      "browser": "./dist/ioc.module.js",
-      "require": "./dist/ioc.js",
+      "types": "./dist/index.d.ts",
+      "module": "./dist/ioc.mjs",
       "import": "./dist/ioc.mjs",
-      "default": "./dist/ioc.module.js"
+      "require": "./dist/ioc.js"
     },
-    "./package.json": "./package.json",
-    "./": "./"
+    "./package.json": "./package.json"
   },
   "keywords": [
     "typescript",
@@ -29,7 +27,6 @@
     "prepack": "npm run build",
     "prebuild": "npm run clean",
     "build": "microbundle --format es,cjs",
-    "postbuild": "shx cp dist/ioc.module.js dist/ioc.mjs",
     "clean": "shx rm -rf dist && shx rm -f owja-ioc-*.tgz && shx rm -rf coverage",
     "test": "jest",
     "lint": "eslint --ext .ts ./src",
@@ -70,7 +67,7 @@
     "/src"
   ],
   "browserslist": [
-    "since 2018-11 and >0%",
-    "node >= 12"
+    "since 2021 and > .1% and not dead",
+    "node >= 16"
   ]
 }
