@@ -64,7 +64,10 @@
   "files": [
     "/dist",
     "!/dist/example",
-    "/src"
+    "/src",
+    "!/src/example",
+    "!/**/*.test.ts",
+    "!/**/*.test.d.ts"
   ],
   "browserslist": [
     "since 2021 and > .1% and not dead",
