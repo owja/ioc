@@ -8,7 +8,6 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "module": "./dist/ioc.mjs",
       "import": "./dist/ioc.mjs",
       "require": "./dist/ioc.js"
