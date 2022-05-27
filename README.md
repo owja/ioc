@@ -237,6 +237,37 @@ export const TYPE = {
 > Since 1.0.0-beta.3 we use the symbol itself for indexing the dependencies.
 > Prior to this version we indexed the dependencies by the string of the symbol.
 
+## Type-Safe Token (2.0 beta)
+
+With version 2 we added the possibility to use a type-safe way to identify our dependencies. This is done with tokens:
+
+```ts
+export TYPE = {
+    "Service" = token<MyServiceInterface>("Service"),
+    // [...]
+}
+```
+
+In this case the type `MyServiceInterface` is inherited when using `container.get(TYPE.Service)`, `resolve(TYPE.Service)`
+and `wire(this, "service", TYPE.Service)`and does not need to be explicitly added. In case of the decorator `@inject(TYPE.Service)` it needs to be added
+but it throws a type error if the types don't match:
+
+```ts
+class Example {
+    @inject(TYPE.Service) // throws a type error because WrongInterface is not compatible with MyServiceInterface
+    readonly service!: WrongInterface;
+}
+```
+
+Correkt:
+
+```ts
+class Example {
+    @inject(TYPE.Service)
+    readonly service!: MyServiceInterface;
+}
+```
+
 ## Usage
 
 #### Step 1 - Installing the OWJA! IoC library
@@ -429,4 +460,4 @@ but has other goals:
 
 **MIT**
 
-Copyright © 2019 Hauke Broer
+Copyright © 2019-2022 The OWJA! Team

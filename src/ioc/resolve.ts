@@ -1,12 +1,13 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
+import {MaybeToken} from "./token";
 
 export function createResolve(container: Container) {
-    return <T = unknown>(type: symbol, ...args: symbol[]) => {
+    return <T = never>(token: MaybeToken<T>, ...args: MaybeToken[]) => {
         let value: T;
         return (): T => {
             if (args.indexOf(NOCACHE) !== -1 || value === undefined) {
-                value = container.get<T>(type);
+                value = container.get<T>(token);
             }
             return value;
         };

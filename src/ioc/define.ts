@@ -1,11 +1,18 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
+import {MaybeToken} from "./token";
 
-export function define<T>(target: T, property: keyof T, container: Container, type: symbol, args: symbol[]) {
+export function define<TVal, TTarget extends {[key in TProp]: TVal}, TProp extends string>(
+    target: TTarget,
+    property: TProp,
+    container: Container,
+    token: MaybeToken<TVal>,
+    argTokens: MaybeToken[],
+) {
     Object.defineProperty(target, property, {
         get: function () {
-            const value = container.get<any>(type);
-            if (args.indexOf(NOCACHE) === -1) {
+            const value = container.get<any>(token);
+            if (argTokens.indexOf(NOCACHE) === -1) {
                 Object.defineProperty(this, property, {
                     value,
                     enumerable: true,
