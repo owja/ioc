@@ -20,6 +20,18 @@ This library implements dependency injection for javascript and typescript.
 * Does **NOT** need reflect-metadata which size is around 50 kb
 * 100% written in **Typescript**
 
+## Install
+
+```bash
+npm install --save-dev @owja/ioc
+```
+
+Latest preview/dev version (alpha or beta)
+
+```bash
+npm install --save-dev @owja/ioc@next
+```
+
 ## The Container API
 
 ### Creating a container
@@ -237,7 +249,7 @@ export const TYPE = {
 > Since 1.0.0-beta.3 we use the symbol itself for indexing the dependencies.
 > Prior to this version we indexed the dependencies by the string of the symbol.
 
-## Type-Safe Token (2.0 beta)
+## Type-Safe Token (new in 2.0)
 
 With version 2 we added the possibility to use a type-safe way to identify our dependencies. This is done with tokens:
 
