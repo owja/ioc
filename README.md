@@ -237,6 +237,17 @@ export const TYPE = {
 > Since 1.0.0-beta.3 we use the symbol itself for indexing the dependencies.
 > Prior to this version we indexed the dependencies by the string of the symbol.
 
+## Type-Safe Token (beta)
+
+With version 2 we added the possibility to use a type-safe way to identify our dependencies. This is done with tokens:
+
+```ts
+export TYPE = {
+    "Service" = token<MyServiceInterface>("Service"),
+    // [...]
+}
+```
+
 ## Usage
 
 #### Step 1 - Installing the OWJA! IoC library
@@ -429,4 +440,4 @@ but has other goals:
 
 **MIT**
 
-Copyright © 2019 Hauke Broer
+Copyright © 2019-2022 The OWJA! Team
