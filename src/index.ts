@@ -1,4 +1,4 @@
-export {Container} from "./ioc/container";
+export {Container, Plugin} from "./ioc/container";
 export {createDecorator} from "./ioc/decorator";
 export {createWire} from "./ioc/wire";
 export {createResolve} from "./ioc/resolve";

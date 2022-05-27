@@ -11,7 +11,7 @@ export function define<TVal, TTarget extends {[key in TProp]: TVal}, TProp exten
 ) {
     Object.defineProperty(target, property, {
         get: function () {
-            const value = container.get<any>(token);
+            const value = container.get<any>(token, argTokens, target);
             if (argTokens.indexOf(NOCACHE) === -1) {
                 Object.defineProperty(this, property, {
                     value,
