@@ -7,7 +7,7 @@ export function createWire(container: Container) {
         target: Target,
         property: Prop,
         token: MaybeToken<Value>,
-        ...args: MaybeToken[]
+        ...args: symbol[]
     ) => {
         define(target, property, container, token, args);
     };
