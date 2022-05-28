@@ -1,10 +1,11 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
+import { token } from "./token";
 
 import {createWire} from "./wire";
 
 const TYPE = {
-    cacheTest: Symbol.for("cacheTest"),
+    cacheTest: token<number>("cacheTest"),
 };
 
 const container = new Container();
@@ -21,7 +22,7 @@ class WireTest {
 }
 
 let count: number;
-container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
+container.bind(TYPE.cacheTest).toFactory(() => ++count);
 
 describe("Wire", () => {
     test("resolves new data only on first access", () => {
