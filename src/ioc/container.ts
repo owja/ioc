@@ -1,16 +1,22 @@
 import {getType, MaybeToken, stringifyToken} from "./token";
 import {NOPLUGINS} from "./symbol";
 
-export interface IConfig<T> {
+interface IConfig<T> {
     object?: INewAble<T>;
     factory?: Factory<T>;
     value?: Value<T>;
     cache?: T;
     singleton: boolean;
-    plugins?: Plugin<T>[];
+    plugins: Plugin<T>[];
 }
 
-export type Plugin<T = unknown> = (container: Container, token: MaybeToken<T>, config: IConfig<T>, item: T, argTokens: MaybeToken[], target: unknown) => void;
+export type Plugin<T = unknown> = (
+    item: T,
+    target: unknown,
+    token: MaybeToken<T>,
+    container: Container,
+    args: MaybeToken[],
+) => void;
 interface INewAble<T> {
     new (...args: any[]): T;
 }
@@ -21,10 +27,10 @@ type Factory<T> = () => T;
 type Value<T> = T;
 
 class PluginOptions<T> {
-    constructor(protected _target: IConfig<T>) {}    
+    constructor(protected _target: IConfig<T>) {}
 
     withPlugin(plugin: Plugin<T>): PluginOptions<T> {
-        this._target.plugins = [plugin];
+        this._target.plugins.push(plugin);
         return this;
     }
 }
@@ -81,7 +87,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, argTokens?: MaybeToken[], target?: unknown): T {
+    get<T = never>(token: MaybeToken<T>, argTokens: MaybeToken[] = [], target?: unknown): T {
         const regItem = this._registry.get(getType(token));
 
         if (regItem === undefined) {
@@ -91,20 +97,14 @@ export class Container {
         const {object, factory, value, cache, singleton, plugins} = regItem;
 
         const execPlugins = (item: T): T => {
-            if (argTokens?.indexOf(NOPLUGINS) !== -1) return item;
+            if (argTokens.indexOf(NOPLUGINS) !== -1) return item;
 
-            for (const plugin of this._plugins) {
-                plugin(this, token, regItem, item, argTokens || [], target);
-            }
-            
-            if (plugins) {
-                for (const plugin of plugins) {
-                    plugin(this, token, regItem, item, argTokens || [], target);
-                }
+            for (const plugin of this._plugins.concat(plugins)) {
+                plugin(item, target, token, this, argTokens);
             }
 
             return item;
-        }
+        };
 
         const cacheItem = (creator: () => T): T => {
             if (singleton && typeof cache !== "undefined") return cache;
@@ -140,7 +140,7 @@ export class Container {
             throw `object can only bound once: ${stringifyToken(token)}`;
         }
 
-        const conf = {singleton: false};
+        const conf = {singleton: false, plugins: []};
         this._registry.set(getType(token), conf);
 
         return conf;
