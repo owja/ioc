@@ -1,6 +1,6 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
-import { token } from "./token";
+import {token} from "./token";
 
 import {createWire} from "./wire";
 
