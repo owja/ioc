@@ -1,22 +1,23 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
+import { token } from "./token";
 
 import {createResolve} from "./resolve";
 
 const TYPE = {
-    cacheTest: Symbol.for("cacheTest"),
+    cacheTest: token<number>("cacheTest"),
 };
 
 const container = new Container();
 const resolve = createResolve(container);
 
 class ResolveTest {
-    cached = resolve<number>(TYPE.cacheTest);
-    notCached = resolve<number>(TYPE.cacheTest, NOCACHE);
+    cached = resolve(TYPE.cacheTest);
+    notCached = resolve(TYPE.cacheTest, NOCACHE);
 }
 
 let count: number;
-container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
+container.bind(TYPE.cacheTest).toFactory(() => ++count);
 
 describe("Resolve", () => {
     test("resolves new data only on first access", () => {
@@ -51,7 +52,7 @@ describe("Resolve", () => {
         count = 0;
 
         function ResolveTestFunctionCached() {
-            const cached = resolve<number>(TYPE.cacheTest);
+            const cached = resolve(TYPE.cacheTest);
             cached();
             cached();
             cached();
@@ -65,7 +66,7 @@ describe("Resolve", () => {
         count = 0;
 
         function ResolveTestFunctionCacheNoCache() {
-            const cached = resolve<number>(TYPE.cacheTest, NOCACHE);
+            const cached = resolve(TYPE.cacheTest, NOCACHE);
             cached();
             cached();
             cached();
