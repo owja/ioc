@@ -3,10 +3,10 @@ import {define} from "./define";
 import {MaybeToken} from "./token";
 
 export function createWire(container: Container) {
-    return <TVal, TTarget extends {[key in TProp]: TVal}, TProp extends string>(
-        target: TTarget,
-        property: TProp,
-        token: MaybeToken<TVal>,
+    return <Value, Target extends {[key in Prop]: Value}, Prop extends string>(
+        target: Target,
+        property: Prop,
+        token: MaybeToken<Value>,
         ...args: MaybeToken[]
     ) => {
         define(target, property, container, token, args);
