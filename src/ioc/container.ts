@@ -1,12 +1,11 @@
 import {getType, MaybeToken, stringifyToken} from "./token";
 import {NOPLUGINS} from "./symbol";
 
-interface IConfig<T> {
-    object?: INewAble<T>;
+interface Item<T> {
     factory?: Factory<T>;
     value?: Value<T>;
     cache?: T;
-    singleton: boolean;
+    singleton?: boolean;
     plugins: Plugin<T>[];
 }
 
@@ -17,17 +16,18 @@ export type Plugin<T = unknown> = (
     container: Container,
     args: MaybeToken[],
 ) => void;
-interface INewAble<T> {
+
+interface NewAble<T> {
     new (...args: any[]): T;
 }
 
-type Registry = Map<symbol, IConfig<any>>;
+type Registry = Map<symbol, Item<any>>;
 
 type Factory<T> = () => T;
 type Value<T> = T;
 
 class PluginOptions<T> {
-    constructor(protected _target: IConfig<T>) {}
+    constructor(protected _target: Item<T>) {}
 
     withPlugin(plugin: Plugin<T>): PluginOptions<T> {
         this._target.plugins.push(plugin);
@@ -43,10 +43,10 @@ class Options<T> extends PluginOptions<T> {
 }
 
 class Bind<T> {
-    constructor(private _target: IConfig<T>) {}
+    constructor(private _target: Item<T>) {}
 
-    to(object: INewAble<T>): Options<T> {
-        this._target.object = object;
+    to(object: NewAble<T>): Options<T> {
+        this._target.factory = () => new object();
         return new Options<T>(this._target);
     }
 
@@ -65,12 +65,12 @@ class Bind<T> {
 }
 
 export class Container {
-    private _registry: Registry = new Map<symbol, IConfig<any>>();
+    private _registry: Registry = new Map<symbol, Item<any>>();
     private _snapshots: Registry[] = [];
     private _plugins: Plugin[] = [];
 
     bind<T = never>(token: MaybeToken<T>): Bind<T> {
-        return new Bind<T>(this._add<T>(token));
+        return new Bind<T>(this._create<T>(token));
     }
 
     rebind<T = never>(token: MaybeToken<T>): Bind<T> {
@@ -88,13 +88,13 @@ export class Container {
     }
 
     get<T = never>(token: MaybeToken<T>, argTokens: MaybeToken[] = [], target?: unknown): T {
-        const regItem = this._registry.get(getType(token));
+        const item = this._registry.get(getType(token));
 
-        if (regItem === undefined) {
+        if (item === undefined) {
             throw `nothing bound to ${stringifyToken(token)}`;
         }
 
-        const {object, factory, value, cache, singleton, plugins} = regItem;
+        const {factory, value, cache, singleton, plugins} = item;
 
         const execPlugins = (item: T): T => {
             if (argTokens.indexOf(NOPLUGINS) !== -1) return item;
@@ -109,12 +109,11 @@ export class Container {
         const cacheItem = (creator: () => T): T => {
             if (singleton && typeof cache !== "undefined") return cache;
             if (!singleton) return creator();
-            regItem.cache = creator();
-            return regItem.cache;
+            item.cache = creator();
+            return item.cache;
         };
 
         if (typeof value !== "undefined") return execPlugins(value);
-        if (typeof object !== "undefined") return execPlugins(cacheItem(() => new object()));
         if (typeof factory !== "undefined") return execPlugins(cacheItem(() => factory()));
 
         throw `nothing is bound to ${stringifyToken(token)}`;
@@ -135,14 +134,14 @@ export class Container {
         return this;
     }
 
-    private _add<T>(token: MaybeToken<T>): IConfig<T> {
+    private _create<T>(token: MaybeToken<T>): Item<T> {
         if (this._registry.get(getType(token)) !== undefined) {
             throw `object can only bound once: ${stringifyToken(token)}`;
         }
 
-        const conf = {singleton: false, plugins: []};
-        this._registry.set(getType(token), conf);
+        const item = {plugins: []};
+        this._registry.set(getType(token), item);
 
-        return conf;
+        return item;
     }
 }
