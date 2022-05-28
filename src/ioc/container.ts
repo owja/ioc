@@ -1,24 +1,23 @@
 import {getType, MaybeToken, stringifyToken} from "./token";
 
-interface IConfig<T> {
-    object?: INewAble<T>;
+interface Item<T> {
     factory?: Factory<T>;
     value?: Value<T>;
     cache?: T;
-    singleton: boolean;
+    singleton?: boolean;
 }
 
-interface INewAble<T> {
+interface NewAble<T> {
     new (...args: any[]): T;
 }
 
-type Registry = Map<symbol, IConfig<any>>;
+type Registry = Map<symbol, Item<any>>;
 
 type Factory<T> = () => T;
 type Value<T> = T;
 
 class Options<T> {
-    constructor(private _target: IConfig<T>) {}
+    constructor(private _target: Item<T>) {}
 
     inSingletonScope() {
         this._target.singleton = true;
@@ -26,10 +25,10 @@ class Options<T> {
 }
 
 class Bind<T> {
-    constructor(private _target: IConfig<T>) {}
+    constructor(private _target: Item<T>) {}
 
-    to(object: INewAble<T>): Options<T> {
-        this._target.object = object;
+    to(object: NewAble<T>): Options<T> {
+        this._target.factory = () => new object();
         return new Options<T>(this._target);
     }
 
@@ -47,11 +46,11 @@ class Bind<T> {
 }
 
 export class Container {
-    private _registry: Registry = new Map<symbol, IConfig<any>>();
+    private _registry: Registry = new Map<symbol, Item<any>>();
     private _snapshots: Registry[] = [];
 
     bind<T = never>(token: MaybeToken<T>): Bind<T> {
-        return new Bind<T>(this._add<T>(token));
+        return new Bind<T>(this._create<T>(token));
     }
 
     rebind<T = never>(token: MaybeToken<T>): Bind<T> {
@@ -69,23 +68,22 @@ export class Container {
     }
 
     get<T = never>(token: MaybeToken<T>): T {
-        const regItem = this._registry.get(getType(token));
+        const item = this._registry.get(getType(token));
 
-        if (regItem === undefined) {
+        if (item === undefined) {
             throw `nothing bound to ${stringifyToken(token)}`;
         }
 
-        const {object, factory, value, cache, singleton} = regItem;
+        const {factory, value, cache, singleton} = item;
 
         const cacheItem = (creator: () => T): T => {
             if (singleton && typeof cache !== "undefined") return cache;
             if (!singleton) return creator();
-            regItem.cache = creator();
-            return regItem.cache;
+            item.cache = creator();
+            return item.cache;
         };
 
         if (typeof value !== "undefined") return value;
-        if (typeof object !== "undefined") return cacheItem(() => new object());
         if (typeof factory !== "undefined") return cacheItem(() => factory());
 
         throw `nothing is bound to ${stringifyToken(token)}`;
@@ -101,14 +99,14 @@ export class Container {
         return this;
     }
 
-    private _add<T>(token: MaybeToken<T>): IConfig<T> {
+    private _create<T>(token: MaybeToken<T>): Item<T> {
         if (this._registry.get(getType(token)) !== undefined) {
             throw `object can only bound once: ${stringifyToken(token)}`;
         }
 
-        const conf = {singleton: false};
-        this._registry.set(getType(token), conf);
+        const item = {};
+        this._registry.set(getType(token), item);
 
-        return conf;
+        return item;
     }
 }
