@@ -4,7 +4,7 @@ import {MaybeToken} from "./token";
 
 export function createDecorator(container: Container) {
     return <T>(token: MaybeToken<T>, ...args: MaybeToken[]) => {
-        return <TTarget extends {[key in TProp]: T}, TProp extends string>(target: TTarget, property: TProp): void => {
+        return <Target extends {[key in Prop]: T}, Prop extends string>(target: Target, property: Prop): void => {
             define(target, property, container, token, args);
         };
     };
