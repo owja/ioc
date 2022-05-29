@@ -9,12 +9,12 @@ interface Item<T> {
     plugins: Plugin<T>[];
 }
 
-export type Plugin<T = unknown> = (
-    item: T,
-    target: unknown,
-    token: MaybeToken<T>,
+export type Plugin<Dependency = any, Target = any> = (
+    dependency: Dependency,
+    target: Target | undefined,
+    args: symbol[],
+    token: MaybeToken<Dependency>,
     container: Container,
-    args: MaybeToken[],
 ) => void;
 
 interface NewAble<T> {
@@ -87,7 +87,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, argTokens: MaybeToken[] = [], target?: unknown): T {
+    get<T = never>(token: MaybeToken<T>, args: symbol[] = [], target?: unknown): T {
         const item = this._registry.get(getType(token));
 
         if (item === undefined) {
@@ -97,10 +97,10 @@ export class Container {
         const {factory, value, cache, singleton, plugins} = item;
 
         const execPlugins = (item: T): T => {
-            if (argTokens.indexOf(NOPLUGINS) !== -1) return item;
+            if (args.indexOf(NOPLUGINS) !== -1) return item;
 
             for (const plugin of this._plugins.concat(plugins)) {
-                plugin(item, target, token, this, argTokens);
+                plugin(item, target, args, token, this);
             }
 
             return item;

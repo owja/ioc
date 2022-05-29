@@ -104,20 +104,20 @@ describe("Container 2.0", () => {
             expect(plugin.mock.calls[0][0]).toBe(resolved);
         });
 
+        test("access the arguments (5th argument)", () => {
+            expect(plugin.mock.calls[0][2].indexOf(NOCACHE)).not.toBe(-1);
+        });
+
         test("access the target (2nd argument)", () => {
             expect(plugin.mock.calls[0][1]).toBe(fakeTarget);
         });
 
         test("access the token (3th argument)", () => {
-            expect(plugin.mock.calls[0][2]).toBe(A);
+            expect(plugin.mock.calls[0][3]).toBe(A);
         });
 
         test("access the container (4th argument)", () => {
-            expect(plugin.mock.calls[0][3]).toBe(container);
-        });
-
-        test("access the arguments (5th argument)", () => {
-            expect(plugin.mock.calls[0][4].indexOf(NOCACHE)).not.toBe(-1);
+            expect(plugin.mock.calls[0][4]).toBe(container);
         });
     });
 });

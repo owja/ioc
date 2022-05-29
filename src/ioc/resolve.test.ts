@@ -101,7 +101,7 @@ describe("Resolve", () => {
 
         test("should pass the arguments", () => {
             testCls.notCached();
-            expect(plugin.mock.calls[0][4].indexOf(NOCACHE)).not.toBe(-1);
+            expect(plugin.mock.calls[0][2].indexOf(NOCACHE)).not.toBe(-1);
         });
 
         test("should pass the ResolveTest class as 2nd argument", () => {
