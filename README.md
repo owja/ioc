@@ -249,7 +249,7 @@ export const TYPE = {
 > Since 1.0.0-beta.3 we use the symbol itself for indexing the dependencies.
 > Prior to this version we indexed the dependencies by the string of the symbol.
 
-## Type-Safe Token (new in 2.0)
+## :new: Type-Safe Token (new in 2.0)
 
 With version 2 we added the possibility to use a type-safe way to identify our dependencies. This is done with tokens:
 
@@ -276,6 +276,126 @@ Correkt:
 ```ts
 class Example {
     @inject(TYPE.Service)
+    readonly service!: MyServiceInterface;
+}
+```
+
+### :new: Plugins (new in 2.0)
+
+Plugins are a way to hook into the dependency resolving process and execute code which can
+access the dependency and also the dependent object.
+
+A plugin can add directly to a dependency or to the container. 
+
+```ts
+container.bind(symbol).to(MyService).withPlugin(plugin);
+```
+
+```ts
+container.addPlugin(plugin);
+```
+
+The plugin is a simple function which has access to the dependency, the target (the instance which requires the dependency),
+the arguments which are passed, the token or symbol which represents the dependency and the container.
+
+```ts
+type Plugin<Dependency = any, Target = any> = (
+    dependency: Dependency,
+    target: Target | undefined,
+    args: symbol[],
+    token: MaybeToken<Dependency>,
+    container: Container,
+) => void;
+```
+
+For example this is a plugin which links a preact view component to a service by calling forceUpdate every time the
+service executes the listener:
+
+```ts
+import {Plugin} from "@owja/ioc";
+import {Component} from "preact";
+
+export const SUBSCRIBE = Symbol();
+
+export const serviceListenerPlugin: Plugin<Listenable, Component> = (service, component, args) => {
+    if (args.indexOf(SUBSCRIBE) === -1 || !component) return;
+
+    const unsubscribe = service.listen(() => component.forceUpdate());
+    const unmount = component.componentWillUnmount;
+
+    component.componentWillUnmount = () => {
+        unsubscribe();
+        unmount?.();
+    };
+};
+
+interface Listenable {
+    listen(listener: () => void): () => void;
+}
+```
+> Note: this will fail on runtime if  `service` does not implement the `Listenable` interface because there is no type checking done
+
+This plugin is added to the dependency directly:
+
+```ts
+const TYPE = {
+    TranslationService: token<TranslatorInterface>("translation-service"),
+};
+
+container
+    .bind<TranslatorInterface>(TYPE.TranslationService)
+    .toFactory(translationFactory)
+    .inSingletonScope()
+    .withPlugin(serviceListenerPlugin);
+```
+
+In a component it is then executed when the dependency is resolved:
+
+```ts
+class Index extends Component {
+    @inject(TYPE.TranslationService, SUBSCRIBE)
+    readonly service!: TranslatorInterface;
+
+    render() {
+        return (
+            <div>{this.service.t("greeting")}</div>
+        );
+    }
+}
+```
+
+This works also with `wire` and `resolve`:
+
+```ts
+class Index extends Component {
+    readonly service!: TranslatorInterface;
+
+    constructor() {
+        super();
+        wire(this, "service", TYPE.TranslationService, SUBSCRIBE);
+    }
+    
+    [...]
+}
+
+class Index extends Component {
+    readonly service = resolve(TYPE.TranslationService, SUBSCRIBE);
+    
+    [...]
+}
+
+```
+
+#### Prevent Plugins from Execution
+
+In case you add a plugin it is executed every time the dependency is resolved. If you want to prevent this you can 
+add the `NOPLUGINS` symbol to the arguments:
+
+```ts
+import {NOPLUGINS} from "@owja/ioc";
+
+class Example {
+    @inject(TYPE.MyService, NOPLUGINS)
     readonly service!: MyServiceInterface;
 }
 ```
