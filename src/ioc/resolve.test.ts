@@ -1,5 +1,6 @@
 import {Container} from "./container";
-import {NOCACHE} from "./symbol";
+
+import {NOCACHE, NOPLUGINS} from "./symbol";
 import {token} from "./token";
 
 import {createResolve} from "./resolve";
@@ -14,6 +15,7 @@ const resolve = createResolve(container);
 class ResolveTest {
     cached = resolve(TYPE.cacheTest);
     notCached = resolve(TYPE.cacheTest, NOCACHE);
+    noPlugins = resolve(TYPE.cacheTest, NOPLUGINS);
 }
 
 let count: number;
@@ -74,5 +76,37 @@ describe("Resolve", () => {
         }
 
         expect(ResolveTestFunctionCacheNoCache()).toBe(4);
+    });
+
+    describe("with a plugin", () => {
+        const plugin = jest.fn();
+        let testCls: ResolveTest;
+
+        container.addPlugin(plugin);
+
+        beforeEach(() => {
+            plugin.mockReset();
+            testCls = new ResolveTest();
+        });
+
+        test("should have executed the plugin", () => {
+            testCls.cached();
+            expect(plugin).toHaveBeenCalledTimes(1);
+        });
+
+        test("should NOT have executed the plugin with NOPLUGINS symbol", () => {
+            testCls.noPlugins();
+            expect(plugin).not.toBeCalled();
+        });
+
+        test("should pass the arguments", () => {
+            testCls.notCached();
+            expect(plugin.mock.calls[0][2].indexOf(NOCACHE)).not.toBe(-1);
+        });
+
+        test("should pass the ResolveTest class as 2nd argument", () => {
+            testCls.cached();
+            expect(plugin.mock.calls[0][1]).toBe(testCls);
+        });
     });
 });
