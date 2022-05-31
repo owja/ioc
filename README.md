@@ -280,7 +280,7 @@ class Example {
 }
 ```
 
-### :new: Plugins (new in 2.0)
+## :new: Plugins (new in 2.0)
 
 Plugins are a way to hook into the dependency resolving process and execute code which can
 access the dependency and also the dependent object.
@@ -308,7 +308,9 @@ type Plugin<Dependency = any, Target = any> = (
 ) => void;
 ```
 
-For example this is a plugin which links a preact view component to a service by calling forceUpdate every time the
+### Plugin Example
+
+The following code is a plugin which links a preact view component to a service by calling forceUpdate every time the
 service executes the listener:
 
 ```ts
@@ -386,7 +388,7 @@ class Index extends Component {
 
 ```
 
-#### Prevent Plugins from Execution
+### Prevent Plugins from Execution
 
 In case you add a plugin it is executed every time the dependency is resolved. If you want to prevent this you can 
 add the `NOPLUGINS` symbol to the arguments:
@@ -400,7 +402,7 @@ class Example {
 }
 ```
 
-## Usage
+## Getting Started
 
 #### Step 1 - Installing the OWJA! IoC library
 
