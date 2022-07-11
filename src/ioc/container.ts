@@ -23,7 +23,7 @@ interface NewAble<T> {
 
 type Registry = Map<symbol, Item<any>>;
 
-type Factory<T> = () => T;
+type Factory<T> = (...args: any[]) => T;
 type Value<T> = T;
 
 class PluginOptions<T> {
@@ -46,7 +46,7 @@ class Bind<T> {
     constructor(private _target: Item<T>) {}
 
     to(object: NewAble<T>): Options<T> {
-        this._target.factory = () => new object();
+        this._target.factory = (...args: any[]) => new object(...args);
         return new Options<T>(this._target);
     }
 
@@ -87,7 +87,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, args: symbol[] = [], target?: unknown): T {
+    get<T = never>(token: MaybeToken<T>, args: symbol[] = [], target?: unknown, ctorArgs: any[] = []): T {
         const item = this._registry.get(getType(token));
 
         if (item === undefined) {
@@ -114,7 +114,7 @@ export class Container {
         };
 
         if (typeof value !== "undefined") return execPlugins(value);
-        if (typeof factory !== "undefined") return execPlugins(cacheItem(() => factory()));
+        if (typeof factory !== "undefined") return execPlugins(cacheItem(() => factory(...ctorArgs)));
 
         throw `nothing is bound to ${stringifyToken(token)}`;
     }
