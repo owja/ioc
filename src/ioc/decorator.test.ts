@@ -37,9 +37,9 @@ const TYPE = {
 
 class Parent implements ITestClass {
     name = "parent";
-    @inject(TYPE.child1, [])
+    @inject(TYPE.child1)
     childOne!: ITestClass;
-    @inject(TYPE.child2, [])
+    @inject(TYPE.child2)
     childTwo!: ITestClass;
 }
 
@@ -69,23 +69,23 @@ class ExtendedClassTest extends Parent {}
 
 class ChildOne implements ITestClass {
     name = "child one";
-    @inject(TYPE.child2, [])
+    @inject(TYPE.child2)
     childOne!: ITestClass;
-    @inject(TYPE.child3, [])
+    @inject(TYPE.child3)
     childTwo!: ITestClass;
 }
 
 class ChildTwo implements ITestClass {
     name = "child two";
-    @inject(TYPE.child1, [])
+    @inject(TYPE.child1)
     childOne!: ITestClass;
 }
 
 class ChildThree implements ITestClass {
     name = "child three";
-    @inject(TYPE.child4, [])
+    @inject(TYPE.child4)
     childOne!: ITestClass;
-    @inject(TYPE.parent, [])
+    @inject(TYPE.parent)
     childTwo!: ITestClass;
 }
 
@@ -94,7 +94,7 @@ class ChildFour implements ITestClass {
 }
 
 class Circular1 implements ICircular {
-    @inject(TYPE.circular2, [])
+    @inject(TYPE.circular2)
     circular!: ICircular;
     get circularName(): string {
         return this.circular.name;
@@ -103,7 +103,7 @@ class Circular1 implements ICircular {
 }
 
 class Circular2 implements ICircular {
-    @inject(TYPE.circular1, [])
+    @inject(TYPE.circular1)
     circular!: ICircular;
     get circularName(): string {
         return this.circular.name;
@@ -112,7 +112,7 @@ class Circular2 implements ICircular {
 }
 
 class CircularFail1 implements ICircular {
-    @inject(TYPE.circularFail2, [])
+    @inject(TYPE.circularFail2)
     circular!: ICircular;
     circularName = "";
     constructor(public name: string) {
@@ -121,7 +121,7 @@ class CircularFail1 implements ICircular {
 }
 
 class CircularFail2 implements ICircular {
-    @inject(TYPE.circularFail1, [])
+    @inject(TYPE.circularFail1)
     circular!: ICircular;
     circularName = "";
     constructor(public name: string) {
@@ -130,7 +130,7 @@ class CircularFail2 implements ICircular {
 }
 
 class CacheTest {
-    @inject(TYPE.cacheTest, [])
+    @inject(TYPE.cacheTest)
     cached!: number;
     @inject(TYPE.cacheTest, [NOCACHE])
     notCached!: number;

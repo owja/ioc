@@ -29,7 +29,7 @@ class WireTest {
     notCached!: number;
 
     constructor() {
-        wire(this, "cached", TYPE.cacheTest, []);
+        wire(this, "cached", TYPE.cacheTest);
         wire(this, "notCached", TYPE.cacheTest, [NOCACHE]);
     }
 }
