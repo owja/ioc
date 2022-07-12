@@ -4,12 +4,12 @@ import {MyOtherServiceInterface} from "./service/my-other-service";
 import {NOCACHE} from "../";
 
 export class Example {
-    @inject(TYPE.MyService)
+    @inject(TYPE.MyService, [])
     readonly myService!: MyServiceInterface;
 
-    @inject(TYPE.MyOtherService)
+    @inject(TYPE.MyOtherService, [])
     readonly myOtherService!: MyOtherServiceInterface;
 
-    @inject(TYPE.MyOtherService, NOCACHE)
+    @inject(TYPE.MyOtherService, [NOCACHE])
     readonly myUncachedOtherService!: MyOtherServiceInterface;
 }
