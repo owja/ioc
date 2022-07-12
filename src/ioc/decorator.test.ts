@@ -20,8 +20,10 @@ interface ICircular {
 
 const TYPE = {
     parent: Symbol.for("parent"),
-    withArgs: Symbol.for("withArgs"),
-    with2Args: Symbol.for("with2Args"),
+    withCtorArgs: Symbol.for("withArgs"),
+    with2CtorArgs: Symbol.for("with2Args"),
+    factoryOneArg: Symbol.for("factoryOneArg"),
+    factoryTwoArgs: Symbol.for("factoryTwoArgs"),
     child1: Symbol.for("child1"),
     child2: Symbol.for("child2"),
     child3: Symbol.for("child3"),
@@ -41,24 +43,24 @@ class Parent implements ITestClass {
     childTwo!: ITestClass;
 }
 
-class WithArg implements ITestClass {
+class WithCtorArg implements ITestClass {
     constructor(public name: string) {}
 }
 
-class ChildWithArg implements ITestClass {
+class ChildWithCtorArg implements ITestClass {
     name = "child with arg";
-    @inject<unknown, ConstructorParameters<typeof WithArg>>(TYPE.withArgs, [], "with arg")
+    @inject<unknown, ConstructorParameters<typeof WithCtorArg>>(TYPE.withCtorArgs, [], "with arg")
     childOne!: ITestClass;
 }
 
 type twoArgsITestClass = ITestClass & { name2: string };
-class With2Arg implements twoArgsITestClass {
+class With2CtorArgs implements twoArgsITestClass {
     constructor(public name: string, public name2: string) {}
 }
 
-class ChildWith2Arg implements ITestClass {
+class ChildWith2CtorArgs implements ITestClass {
     name = "child with 2 args";
-    @inject<unknown, ConstructorParameters<typeof With2Arg>>(TYPE.with2Args, [], "with", "two args")
+    @inject<unknown, ConstructorParameters<typeof With2CtorArgs>>(TYPE.with2CtorArgs, [], "with", "two args")
     childOne!: twoArgsITestClass;
 }
 
@@ -134,9 +136,17 @@ class CacheTest {
     notCached!: number;
 }
 
+class factoryWithArguments {
+    @inject<string, [string]>(TYPE.factoryOneArg, [], "hello")
+    factOne!: string;
+
+    @inject<string, [string, string]>(TYPE.factoryTwoArgs, [], "hello", "world")
+    factTwo!: string;
+}
+
 container.bind<ITestClass>(TYPE.parent).to(Parent);
-container.bind<ITestClass>(TYPE.withArgs).to(WithArg);
-container.bind<ITestClass>(TYPE.with2Args).to(With2Arg);
+container.bind<ITestClass>(TYPE.withCtorArgs).to(WithCtorArg);
+container.bind<ITestClass>(TYPE.with2CtorArgs).to(With2CtorArgs);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
 container.bind<ITestClass>(TYPE.child3).to(ChildThree);
@@ -148,6 +158,8 @@ container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 
 let count: number;
 container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
+container.bind<string>(TYPE.factoryOneArg).toFactory((a: string) => a);
+container.bind<string>(TYPE.factoryTwoArgs).toFactory((a: string, b: string) => `${a} - ${b}`);
 
 describe("Injector", () => {
     let instance: Parent;
@@ -179,14 +191,20 @@ describe("Injector", () => {
     });
 
     test("can inject with one arg", () => {
-        const child = new ChildWithArg();
+        const child = new ChildWithCtorArg();
         expect(child.childOne.name).toBe("with arg");
     });
 
     test("can inject with two args", () => {
-        const child = new ChildWith2Arg();
+        const child = new ChildWith2CtorArgs();
         expect(child.childOne.name).toBe("with");
         expect(child.childOne.name2).toBe("two args");
+    });
+
+    test("can inject factories with arg(s)", () => {
+        const child = new factoryWithArguments();
+        expect(child.factOne).toBe("hello");
+        expect(child.factTwo).toBe("hello - world");
     });
 
     test("can inject a circular dependency when accessing the dependency outside of constructor", () => {
