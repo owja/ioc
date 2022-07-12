@@ -20,11 +20,6 @@ export type Plugin<Dependency = any, Target = any> = (
 interface NewAble<T> {
     new (...args: any[]): T;
 }
-/*
-abstract class EmptyAbstractClass {}
-type Constructable<T = Record<string, unknown>> = typeof EmptyAbstractClass & {prototype: T};
-type factory<T> = (...args: ConstructorParameters<Constructable<T>>) => T; 
-*/
 
 type Registry = Map<symbol, Item<any>>;
 
