@@ -30,10 +30,10 @@ container.bind(TYPE.factoryWithoutArguments).toFactory(() => new WithoutArgument
 const resolve = createResolve(container);
 
 class ResolveTest {
-  classWithArguments = resolve(TYPE.classWithArguments);
-  classWithoutArguments = resolve(TYPE.classWithoutArguments);
-  factoryWithArguments = resolve(TYPE.factoryWithArguments);
-  factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments);
+  classWithArguments = resolve(TYPE.classWithArguments, []);
+  classWithoutArguments = resolve(TYPE.classWithoutArguments, []);
+  factoryWithArguments = resolve(TYPE.factoryWithArguments, []);
+  factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments, []);
 }
 
 describe("Resolve", () => {

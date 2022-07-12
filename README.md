@@ -355,7 +355,7 @@ In a component it is then executed when the dependency is resolved:
 
 ```ts
 class Index extends Component {
-    @inject(TYPE.TranslationService, SUBSCRIBE)
+    @inject(TYPE.TranslationService, [SUBSCRIBE])
     readonly service!: TranslatorInterface;
 
     render() {
@@ -374,14 +374,14 @@ class Index extends Component {
 
     constructor() {
         super();
-        wire(this, "service", TYPE.TranslationService, SUBSCRIBE);
+        wire(this, "service", TYPE.TranslationService, [SUBSCRIBE]);
     }
     
     [...]
 }
 
 class Index extends Component {
-    readonly service = resolve(TYPE.TranslationService, SUBSCRIBE);
+    readonly service = resolve(TYPE.TranslationService, [SUBSCRIBE]);
     
     [...]
 }
@@ -397,7 +397,7 @@ add the `NOPLUGINS` symbol to the arguments:
 import {NOPLUGINS} from "@owja/ioc";
 
 class Example {
-    @inject(TYPE.MyService, NOPLUGINS)
+    @inject(TYPE.MyService, [NOPLUGINS])
     readonly service!: MyServiceInterface;
 }
 ```

@@ -13,9 +13,9 @@ const container = new Container();
 const resolve = createResolve(container);
 
 class ResolveTest {
-    cached = resolve(TYPE.cacheTest);
-    notCached = resolve(TYPE.cacheTest, NOCACHE);
-    noPlugins = resolve(TYPE.cacheTest, NOPLUGINS);
+    cached = resolve(TYPE.cacheTest, []);
+    notCached = resolve(TYPE.cacheTest, [NOCACHE]);
+    noPlugins = resolve(TYPE.cacheTest, [NOPLUGINS]);
 }
 
 let count: number;
@@ -54,7 +54,7 @@ describe("Resolve", () => {
         count = 0;
 
         function ResolveTestFunctionCached() {
-            const cached = resolve(TYPE.cacheTest);
+            const cached = resolve(TYPE.cacheTest, []);
             cached();
             cached();
             cached();
@@ -68,7 +68,7 @@ describe("Resolve", () => {
         count = 0;
 
         function ResolveTestFunctionCacheNoCache() {
-            const cached = resolve(TYPE.cacheTest, NOCACHE);
+            const cached = resolve(TYPE.cacheTest, [NOCACHE]);
             cached();
             cached();
             cached();
