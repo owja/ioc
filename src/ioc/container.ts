@@ -1,43 +1,7 @@
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./symbol";
-import type { Factory, Item, MaybeToken, NewAble, Plugin, Registry, Value } from "./types";
-
-
-class PluginOptions<T> {
-    constructor(protected _target: Item<T>) {}
-
-    withPlugin(plugin: Plugin<T>): PluginOptions<T> {
-        this._target.plugins.push(plugin);
-        return this;
-    }
-}
-
-class Options<T> extends PluginOptions<T> {
-    inSingletonScope(): PluginOptions<T> {
-        this._target.singleton = true;
-        return this;
-    }
-}
-
-class Bind<T> {
-    constructor(private _target: Item<T>) {}
-
-    to(object: NewAble<T>): Options<T> {
-        this._target.factory = () => new object();
-        return new Options<T>(this._target);
-    }
-
-    toFactory(factory: Factory<T>): Options<T> {
-        this._target.factory = factory;
-        return new Options<T>(this._target);
-    }
-
-    toValue(value: Value<T>): PluginOptions<T> {
-        if (typeof value === "undefined") throw "cannot bind a value of type undefined";
-        this._target.value = value;
-        return new PluginOptions<T>(this._target);
-    }
-}
+import type { Item, MaybeToken, Plugin, Registry } from "./types";
+import { Bind } from "./bind";
 
 export class Container {
     private _registry: Registry = new Map<symbol, Item<any>>();
