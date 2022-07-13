@@ -1,6 +1,6 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
-import {MaybeToken} from "./token";
+import type {MaybeToken} from "./types";
 
 export function define<T, Target extends {[key in Prop]: T}, Prop extends string>(
     target: Target,

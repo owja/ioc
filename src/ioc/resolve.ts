@@ -1,6 +1,6 @@
 import {Container} from "./container";
 import {NOCACHE} from "./symbol";
-import {MaybeToken} from "./token";
+import type {MaybeToken} from "./types";
 
 export function createResolve(container: Container) {
     return <T = never>(token: MaybeToken<T>, ...args: symbol[]) => {

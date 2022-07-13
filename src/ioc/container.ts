@@ -1,30 +1,7 @@
-import {getType, MaybeToken, stringifyToken} from "./token";
+import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./symbol";
+import type { Factory, Item, MaybeToken, NewAble, Plugin, Registry, Value } from "./types";
 
-interface Item<T> {
-    factory?: Factory<T>;
-    value?: Value<T>;
-    cache?: T;
-    singleton?: boolean;
-    plugins: Plugin<T>[];
-}
-
-export type Plugin<Dependency = any, Target = any> = (
-    dependency: Dependency,
-    target: Target | undefined,
-    args: symbol[],
-    token: MaybeToken<Dependency>,
-    container: Container,
-) => void;
-
-interface NewAble<T> {
-    new (...args: any[]): T;
-}
-
-type Registry = Map<symbol, Item<any>>;
-
-type Factory<T> = () => T;
-type Value<T> = T;
 
 class PluginOptions<T> {
     constructor(protected _target: Item<T>) {}
