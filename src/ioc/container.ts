@@ -33,9 +33,7 @@ class Bind<T> {
     }
 
     toValue(value: Value<T>): PluginOptions<T> {
-        if (typeof value === "undefined") {
-            throw "cannot bind a value of type undefined";
-        }
+        if (typeof value === "undefined") throw "cannot bind a value of type undefined";
         this._target.value = value;
         return new PluginOptions<T>(this._target);
     }
@@ -55,9 +53,7 @@ export class Container {
     }
 
     remove(token: MaybeToken): Container {
-        if (this._registry.get(getType(token)) === undefined) {
-            throw `${stringifyToken(token)} was never bound`;
-        }
+        if (this._registry.get(getType(token)) === undefined) throw `${stringifyToken(token)} was never bound`;
 
         this._registry.delete(getType(token));
 
@@ -67,9 +63,7 @@ export class Container {
     get<T = never>(token: MaybeToken<T>, args: symbol[] = [], target?: unknown): T {
         const item = this._registry.get(getType(token));
 
-        if (item === undefined) {
-            throw `nothing bound to ${stringifyToken(token)}`;
-        }
+        if (item === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
         const {factory, value, cache, singleton, plugins} = item;
 
@@ -110,9 +104,7 @@ export class Container {
     }
 
     private _create<T>(token: MaybeToken<T>): Item<T> {
-        if (this._registry.get(getType(token)) !== undefined) {
-            throw `object can only bound once: ${stringifyToken(token)}`;
-        }
+        if (this._registry.get(getType(token)) !== undefined) throw `object can only bound once: ${stringifyToken(token)}`;
 
         const item = {plugins: []};
         this._registry.set(getType(token), item);
