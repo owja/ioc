@@ -1,21 +1,15 @@
 import type { MaybeToken, Token } from "./types";
 
-export function token<T>(name: string) {
-    return {type: Symbol(name)} as Token<T>;
-}
+export const token = <T>(name: string) => ({type: Symbol(name)} as Token<T>)
 
-function isToken<T>(token: MaybeToken<T>): token is Token<T> {
-    return typeof token != "symbol";
-}
+const isToken = <T>(token: MaybeToken<T>): token is Token<T> => typeof token != "symbol";
 
-export function stringifyToken(token: MaybeToken): string {
-    return isToken(token)
+export const stringifyToken = (token: MaybeToken): string =>
+    isToken(token)
         ? `Token(${token.type.toString()})`
         : token.toString();
-}
 
-export function getType(token: MaybeToken): symbol {
-    return isToken(token)
+export const getType = (token: MaybeToken): symbol =>
+    isToken(token)
         ? token.type
         : token;
-}
