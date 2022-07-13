@@ -9,17 +9,13 @@ function isToken<T>(token: MaybeToken<T>): token is Token<T> {
 }
 
 export function stringifyToken(token: MaybeToken): string {
-    if (isToken(token)) {
-        return `Token(${token.type.toString()})`;
-    } else {
-        return token.toString();
-    }
+    return isToken(token)
+        ? `Token(${token.type.toString()})`
+        : token.toString();
 }
 
 export function getType(token: MaybeToken): symbol {
-    if (isToken(token)) {
-        return token.type;
-    } else {
-        return token;
-    }
+    return isToken(token)
+        ? token.type
+        : token;
 }
