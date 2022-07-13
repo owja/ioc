@@ -76,9 +76,7 @@ export class Container {
         const execPlugins = (item: T): T => {
             if (args.indexOf(NOPLUGINS) !== -1) return item;
 
-            for (const plugin of this._plugins.concat(plugins)) {
-                plugin(item, target, args, token, this);
-            }
+            this._plugins.concat(plugins).forEach(plugin => plugin(item, target, args, token, this));
 
             return item;
         };
