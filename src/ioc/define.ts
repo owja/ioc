@@ -11,7 +11,7 @@ export function define<T, Target extends {[key in Prop]: T}, Prop extends string
 ) {
     Object.defineProperty(target, property, {
         get: function () {
-            const value = container.get<any>(token, args, this);
+            const value = container.get<T>(token, args, this);
             if (args.indexOf(NOCACHE) === -1)
                 Object.defineProperty(this, property, {
                     value,
