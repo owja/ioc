@@ -9,7 +9,7 @@ export interface Item<T> {
   plugins: Plugin<T>[];
 }
 
-export type Plugin<Dependency = any, Target = any> = (
+export type Plugin<Dependency = unknown, Target = unknown> = (
   dependency: Dependency,
   target: Target | undefined,
   args: symbol[],
@@ -18,7 +18,7 @@ export type Plugin<Dependency = any, Target = any> = (
 ) => void;
 
 export interface NewAble<T> {
-  new (...args: any[]): T;
+  new (...args: unknown[]): T;
 }
 
 export type Registry = Map<symbol, Item<any>>;
