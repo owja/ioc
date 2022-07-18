@@ -19,7 +19,7 @@ describe("Container using symbols", () => {
         expect(container.get<string>(exampleSymbol)).toBe("hello world 2");
         expect(container.get<string>(exampleSymbol)).toBe("hello world 3");
 
-        container.bind(stringToken).toFactory(() => `hello world ${count++}`);
+        container.bind(stringToken).toFactory(function () { return `hello world ${count++}` });
 
         expect(container.get(stringToken)).toBe("hello world 4");
         expect(container.get(stringToken)).toBe("hello world 5");

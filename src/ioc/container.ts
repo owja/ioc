@@ -1,6 +1,6 @@
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./symbol";
-import type { Item, MaybeToken, Plugin, Registry } from "./types";
+import type { Factory, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
 
 export class Container {
@@ -39,7 +39,7 @@ export class Container {
             return item;
         };
 
-        const cacheItem = (creator: () => T): T => {
+        const cacheItem = (creator: Factory<T>): T => {
             if (singleton && typeof cache !== "undefined") return cache;
             if (!singleton) return creator();
             item.cache = creator();
@@ -47,7 +47,7 @@ export class Container {
         };
 
         if (typeof value !== "undefined") return execPlugins(value);
-        if (typeof factory !== "undefined") return execPlugins(cacheItem(() => factory()));
+        if (typeof factory !== "undefined") return execPlugins(cacheItem(factory));
 
         throw `nothing is bound to ${stringifyToken(token)}`;
     }
