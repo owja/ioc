@@ -4,7 +4,7 @@ import type { Factory, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
 
 export class Container {
-    private _registry: Registry = new Map<symbol, Item<any>>();
+    private _registry: Registry = new Map<symbol, Item<unknown>>();
     private _snapshots: Registry[] = [];
     private _plugins: Plugin[] = [];
 
@@ -29,12 +29,12 @@ export class Container {
 
         if (item === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
-        const {factory, value, cache, singleton, plugins} = item;
+        const {factory, value, cache, singleton, plugins} = <Item<T>>item;
 
         const execPlugins = (item: T): T => {
             if (args.indexOf(NOPLUGINS) !== -1) return item;
 
-            this._plugins.concat(plugins).forEach(plugin => plugin(item, target, args, token, this));
+            this._plugins.concat(<Plugin[]>plugins).forEach(plugin => plugin(item, target, args, token, this));
 
             return item;
         };
@@ -43,7 +43,7 @@ export class Container {
             if (singleton && typeof cache !== "undefined") return cache;
             if (!singleton) return creator();
             item.cache = creator();
-            return item.cache;
+            return <T>item.cache;
         };
 
         if (typeof value !== "undefined") return execPlugins(value);
