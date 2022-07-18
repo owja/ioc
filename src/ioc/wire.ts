@@ -3,7 +3,7 @@ import {define} from "./define";
 import type {MaybeToken} from "./types";
 
 export function createWire(container: Container) {
-    return <Value, Target extends {[key in Prop]: Value}, Prop extends string>(
+    return <Value, Target extends {[key in Prop]: Value}, Prop extends keyof Target>(
         target: Target,
         property: Prop,
         token: MaybeToken<Value>,
