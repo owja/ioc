@@ -1,5 +1,5 @@
-import { Options } from "./option";
-import { PluginOptions } from "./plugin";
+import { Options } from "./options";
+import { PluginOptions } from "./pluginOptions";
 import type { Item, NewAble, Factory, Value } from "./types";
 
 export class Bind<T> {

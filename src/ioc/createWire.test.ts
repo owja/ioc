@@ -2,7 +2,7 @@ import {Container} from "./container";
 import {NOCACHE} from "./tags";
 import {token} from "./token";
 
-import {createWire} from "./wire";
+import {createWire} from "./createWire";
 
 const TYPE = {
     cacheTest: token<number>("cacheTest"),
