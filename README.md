@@ -391,7 +391,7 @@ class Index extends Component {
 ### Prevent Plugins from Execution
 
 In case you add a plugin it is executed every time the dependency is resolved. If you want to prevent this you can 
-add the `NOPLUGINS` symbol to the arguments:
+add the `NOPLUGINS` tag to the arguments:
 
 ```ts
 import {NOPLUGINS} from "@owja/ioc";

@@ -1,5 +1,5 @@
 import {getType, stringifyToken} from "./token";
-import {NOPLUGINS} from "./symbol";
+import {NOPLUGINS} from "./tags";
 import type { Factory, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
 
@@ -24,7 +24,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, args: symbol[] = [], target?: unknown): T {
+    get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown): T {
         const item = this._registry.get(getType(token));
 
         if (item === undefined) throw `nothing bound to ${stringifyToken(token)}`;
@@ -32,9 +32,9 @@ export class Container {
         const {factory, value, cache, singleton, plugins} = <Item<T>>item;
 
         const execPlugins = (item: T): T => {
-            if (args.indexOf(NOPLUGINS) !== -1) return item;
+            if (tags.indexOf(NOPLUGINS) !== -1) return item;
 
-            this._plugins.concat(<Plugin[]>plugins).forEach(plugin => plugin(item, target, args, token, this));
+            this._plugins.concat(<Plugin[]>plugins).forEach(plugin => plugin(item, target, tags, token, this));
 
             return item;
         };

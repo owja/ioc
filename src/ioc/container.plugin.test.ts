@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import {NOCACHE, NOPLUGINS} from "./symbol";
+import {NOCACHE, NOPLUGINS} from "./tags";
 import {token} from "./token";
 import type { Plugin } from './types';
 
@@ -93,12 +93,12 @@ describe("Container 2.0", () => {
     describe("the plugin should be able to", () => {
         let resolved: TestClass;
         const fakeTarget = class {};
-        const fakeArgs = [NOCACHE];
+        const fakeTags = [NOCACHE];
 
         beforeEach(() => {
             container.bind(A).to(TestClass);
             container.addPlugin(plugin);
-            resolved = container.get(A, fakeArgs, fakeTarget);
+            resolved = container.get(A, fakeTags, fakeTarget);
         });
 
         test("access the dependency (1st argument)", () => {

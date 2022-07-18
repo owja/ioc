@@ -12,7 +12,7 @@ export interface Item<T> {
 export type Plugin<Dependency = unknown, Target = unknown> = (
   dependency: Dependency,
   target: Target | undefined,
-  args: symbol[],
+  tags: symbol[],
   token: MaybeToken<Dependency>,
   container: Container,
 ) => void;

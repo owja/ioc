@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import {NOCACHE} from "./symbol";
+import {NOCACHE} from "./tags";
 import type {MaybeToken} from "./types";
 
 export function define<T, Target extends {[key in Prop]: T}, Prop extends string>(
@@ -7,12 +7,12 @@ export function define<T, Target extends {[key in Prop]: T}, Prop extends string
     property: Prop,
     container: Container,
     token: MaybeToken<T>,
-    args: symbol[],
+    tags: symbol[],
 ) {
     Object.defineProperty(target, property, {
         get: function () {
-            const value = container.get<T>(token, args, this);
-            if (args.indexOf(NOCACHE) === -1)
+            const value = container.get<T>(token, tags, this);
+            if (tags.indexOf(NOCACHE) === -1)
                 Object.defineProperty(this, property, {
                     value,
                     enumerable: true,

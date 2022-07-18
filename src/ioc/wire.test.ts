@@ -1,5 +1,5 @@
 import {Container} from "./container";
-import {NOCACHE} from "./symbol";
+import {NOCACHE} from "./tags";
 import {token} from "./token";
 
 import {createWire} from "./wire";

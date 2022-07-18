@@ -1,6 +1,6 @@
 import {Container} from "./container";
 
-import {NOCACHE, NOPLUGINS} from "./symbol";
+import {NOCACHE, NOPLUGINS} from "./tags";
 import {token} from "./token";
 
 import {createResolve} from "./resolve";
