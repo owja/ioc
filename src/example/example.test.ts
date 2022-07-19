@@ -1,6 +1,6 @@
+import type {MyOtherServiceInterface} from "./service/my-other-service";
+import type {MyServiceInterface} from "./service/my-service";
 import {container, TYPE} from "./service/container";
-import {MyServiceInterface} from "./service/my-service";
-import {MyOtherServiceInterface} from "./service/my-other-service";
 
 import {MyServiceMock} from "./test/my-service-mock";
 import {MyOtherServiceMock} from "./test/my-other-service-mock";

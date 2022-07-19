@@ -1,4 +1,4 @@
-import {MyOtherServiceInterface} from "../service/my-other-service";
+import type {MyOtherServiceInterface} from "../service/my-other-service";
 
 let number = 0;
 
