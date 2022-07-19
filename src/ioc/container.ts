@@ -1,6 +1,6 @@
-import {getType, stringifyToken} from "./token";
 import type { Factory, Injected, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
+import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./tags";
 
 const isFactory = <T>(i: Injected<T>): i is Factory<T> => typeof i === "function";

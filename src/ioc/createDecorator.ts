@@ -1,6 +1,6 @@
-import {Container} from "./container";
-import {define} from "./define";
 import type {MaybeToken} from "./types";
+import type {Container} from "./container";
+import {define} from "./define";
 
 export function createDecorator(container: Container) {
     return <T>(token: MaybeToken<T>, ...tags: symbol[]) => {

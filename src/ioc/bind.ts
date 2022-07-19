@@ -1,6 +1,6 @@
+import type { Item, NewAble, Factory, Value } from "./types";
 import { Options } from "./options";
 import { PluginOptions } from "./pluginOptions";
-import type { Item, NewAble, Factory, Value } from "./types";
 
 export class Bind<T> {
   constructor(private _target: Item<T>) {}
