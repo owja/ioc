@@ -71,7 +71,6 @@ export class Container {
 
     private _cacheItem<T>(item: Item<T>): T {
         if (!item.singleton) return (<Factory<T>>item.injected)();
-        if (item.cache === undefined) item.cache = (<Factory<T>>item.injected)();
-        return item.cache;
+        return item.cache = item.cache || (<Factory<T>>item.injected)();
     }
 }
