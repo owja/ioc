@@ -1,7 +1,9 @@
 import {getType, stringifyToken} from "./token";
-import type { Factory, Item, MaybeToken, Plugin, Registry } from "./types";
+import type { Factory, Injected, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
 import {NOPLUGINS} from "./tags";
+
+const isFactory = <T>(i: Injected<T>): i is Factory<T> => typeof i === "function";
 
 export class Container {
     private _registry: Registry = new Map<symbol, Item<unknown>>();
@@ -29,11 +31,18 @@ export class Container {
 
         if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
-        const value = typeof item.injected !== "function" 
-            ? item.injected 
-            : this._cacheItem(item);
+        const value = isFactory(item.injected)
+            ? !item.singleton 
+                ? item.injected()
+                : item.cache = item.cache || item.injected()
+            : item.injected;
 
-        return this._execPluginsItem(item.plugins, value, token, tags, target);
+        if (tags.indexOf(NOPLUGINS) === -1)
+            item.plugins.concat(this._plugins).forEach(plugin => {
+                plugin(value, target, tags, token, this);
+            });
+
+        return value;
     }
 
     addPlugin(plugin: Plugin): Container {
@@ -59,18 +68,5 @@ export class Container {
         this._registry.set(getType(token), item);
 
         return item;
-    }
-
-    private _execPluginsItem<T>(itemPlugins: Plugin<T, unknown>[], value: T, token: MaybeToken<T>, tags: symbol[], target?: unknown): T {
-        if (tags.indexOf(NOPLUGINS) === -1)
-            itemPlugins.concat(this._plugins).forEach(plugin => {
-                plugin(value, target, tags, token, this);
-            });
-        return value;
-    }
-
-    private _cacheItem<T>(item: Item<T>): T {
-        if (!item.singleton) return (<Factory<T>>item.injected)();
-        return item.cache = item.cache || (<Factory<T>>item.injected)();
     }
 }
