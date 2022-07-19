@@ -1,7 +1,7 @@
 import {getType, stringifyToken} from "./token";
-import {NOPLUGINS} from "./tags";
 import type { Factory, Item, MaybeToken, Plugin, Registry } from "./types";
 import { Bind } from "./bind";
+import {NOPLUGINS} from "./tags";
 
 export class Container {
     private _registry: Registry = new Map<symbol, Item<unknown>>();
@@ -9,7 +9,7 @@ export class Container {
     private _plugins: Plugin[] = [];
 
     bind<T = never>(token: MaybeToken<T>): Bind<T> {
-        return new Bind<T>(this._create<T>(token));
+        return new Bind<T>(this._createItem<T>(token));
     }
 
     rebind<T = never>(token: MaybeToken<T>): Bind<T> {
@@ -25,31 +25,15 @@ export class Container {
     }
 
     get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown): T {
-        const item = this._registry.get(getType(token));
+        const item = <Item<T> | undefined>this._registry.get(getType(token));
 
-        if (item === undefined) throw `nothing bound to ${stringifyToken(token)}`;
+        if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
-        const {factory, value, cache, singleton, plugins} = <Item<T>>item;
+        const value = typeof item.injected !== "function" 
+            ? item.injected 
+            : this._cacheItem(item);
 
-        const execPlugins = (item: T): T => {
-            if (tags.indexOf(NOPLUGINS) !== -1) return item;
-
-            this._plugins.concat(<Plugin[]>plugins).forEach(plugin => plugin(item, target, tags, token, this));
-
-            return item;
-        };
-
-        const cacheItem = (creator: Factory<T>): T => {
-            if (singleton && typeof cache !== "undefined") return cache;
-            if (!singleton) return creator();
-            item.cache = creator();
-            return <T>item.cache;
-        };
-
-        if (typeof value !== "undefined") return execPlugins(value);
-        if (typeof factory !== "undefined") return execPlugins(cacheItem(factory));
-
-        throw `nothing is bound to ${stringifyToken(token)}`;
+        return this._execPluginsItem(item.plugins, value, token, tags, target);
     }
 
     addPlugin(plugin: Plugin): Container {
@@ -67,12 +51,27 @@ export class Container {
         return this;
     }
 
-    private _create<T>(token: MaybeToken<T>): Item<T> {
+    /* Item related */
+    private _createItem<T>(token: MaybeToken<T>): Item<T> {
         if (this._registry.get(getType(token)) !== undefined) throw `object can only bound once: ${stringifyToken(token)}`;
 
         const item = {plugins: []};
         this._registry.set(getType(token), item);
 
         return item;
+    }
+
+    private _execPluginsItem<T>(itemPlugins: Plugin<T, unknown>[], value: T, token: MaybeToken<T>, tags: symbol[], target?: unknown): T {
+        if (tags.indexOf(NOPLUGINS) === -1)
+            itemPlugins.concat(this._plugins).forEach(plugin => {
+                plugin(value, target, tags, token, this);
+            });
+        return value;
+    }
+
+    private _cacheItem<T>(item: Item<T>): T {
+        if (!item.singleton) return (<Factory<T>>item.injected)();
+        if (item.cache === undefined) item.cache = (<Factory<T>>item.injected)();
+        return item.cache;
     }
 }

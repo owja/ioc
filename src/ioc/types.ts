@@ -1,9 +1,9 @@
 import type { Container } from "./container";
 
 // container
+export type Injected<T> = Factory<T> | Value<T>;
 export interface Item<T> {
-  factory?: Factory<T>;
-  value?: Value<T>;
+  injected?: Injected<T>;
   cache?: T;
   singleton?: boolean;
   plugins: Plugin<T>[];

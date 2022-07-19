@@ -161,7 +161,7 @@ describe("Container using symbols", () => {
 
     test("can not get unbound dependency", () => {
         container.bind(exampleSymbol);
-        expect(() => container.get<string>(exampleSymbol)).toThrow("nothing is bound to Symbol(example)");
+        expect(() => container.get<string>(exampleSymbol)).toThrow("nothing bound to Symbol(example)");
     });
 
     test("can rebind to a symbol", () => {
