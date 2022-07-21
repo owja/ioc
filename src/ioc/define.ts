@@ -10,7 +10,7 @@ export function define<T, Target extends {[key in Prop]: T}, Prop extends keyof 
     tags: symbol[],
 ) {
     Object.defineProperty(target, property, {
-        get: function () {
+        get: function <R>(this: R): T {
             const value = container.get<T>(token, tags, this);
             if (tags.indexOf(NOCACHE) === -1)
                 Object.defineProperty(this, property, {
