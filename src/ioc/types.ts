@@ -21,8 +21,6 @@ export interface NewAble<T> {
   new (...args: unknown[]): T;
 }
 
-export type Registry = Map<symbol, Item<unknown>>;
-
 export type Factory<T> = () => T;
 export type Value<T> = T;
 

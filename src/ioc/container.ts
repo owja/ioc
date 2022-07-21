@@ -1,4 +1,4 @@
-import type { Factory, Injected, Item, MaybeToken, Plugin, Registry } from "./types";
+import type { Factory, Injected, Item, MaybeToken, Plugin } from "./types";
 import { Bind } from "./bind";
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./tags";
@@ -6,8 +6,8 @@ import {NOPLUGINS} from "./tags";
 const isFactory = <T>(i: Injected<T>): i is Factory<T> => typeof i === "function";
 
 export class Container {
-    private _registry: Registry = new Map<symbol, Item<unknown>>();
-    private _snapshots: Registry[] = [];
+    private _registry = new Map<symbol, Item<unknown>>();
+    private _snapshots: typeof this._registry[] = [];
     private _plugins: Plugin[] = [];
 
     bind<T = never>(token: MaybeToken<T>): Bind<T> {
