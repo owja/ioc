@@ -1,7 +1,7 @@
 import {Container} from "./container";
 import {NOCACHE, NOPLUGINS} from "./tags";
 import {token} from "./token";
-import type { Plugin } from './types';
+import type {Plugin} from "./types";
 
 class TestClass {
     name = "test class";

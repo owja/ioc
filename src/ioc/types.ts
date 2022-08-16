@@ -1,24 +1,24 @@
-import type { Container } from "./container";
+import type {Container} from "./container";
 
 // container
 export type Injected<T> = Factory<T> | Value<T>;
 export interface Item<T> {
-  injected?: Injected<T>;
-  cache?: T;
-  singleton?: boolean;
-  plugins: Plugin<T>[];
+    injected?: Injected<T>;
+    cache?: T;
+    singleton?: boolean;
+    plugins: Plugin<T>[];
 }
 
 export type Plugin<Dependency = unknown, Target = unknown> = (
-  dependency: Dependency,
-  target: Target | undefined,
-  tags: symbol[],
-  token: MaybeToken<Dependency>,
-  container: Container,
+    dependency: Dependency,
+    target: Target | undefined,
+    tags: symbol[],
+    token: MaybeToken<Dependency>,
+    container: Container,
 ) => void;
 
 export interface NewAble<T> {
-  new (...args: unknown[]): T;
+    new (...args: unknown[]): T;
 }
 
 export type Factory<T> = () => T;
@@ -29,6 +29,6 @@ export type MaybeToken<T = unknown> = Token<T> | symbol;
 
 declare const typeMarker: unique symbol;
 export interface Token<T> {
-  type: symbol;
-  [typeMarker]: T;
+    type: symbol;
+    [typeMarker]: T;
 }
