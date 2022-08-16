@@ -300,9 +300,9 @@ The plugin is a simple function which has access to the dependency, the target (
 the arguments which are passed, the token or symbol which represents the dependency and the container.
 
 ```ts
-type Plugin<Dependency = any, Target = any> = (
+type Plugin<Dependency = unknown> = (
     dependency: Dependency,
-    target: Target | undefined,
+    target: unknown,
     args: symbol[],
     token: MaybeToken<Dependency>,
     container: Container,
@@ -320,8 +320,9 @@ import {Component} from "preact";
 
 export const SUBSCRIBE = Symbol();
 
-export const serviceListenerPlugin: Plugin<Listenable, Component> = (service, component, args) => {
+export const serviceListenerPlugin: Plugin<Listenable> = (service, component, args) => {
     if (args.indexOf(SUBSCRIBE) === -1 || !component) return;
+    if (!isComponent(component)) return;
 
     const unsubscribe = service.listen(() => component.forceUpdate());
     const unmount = component.componentWillUnmount;
@@ -331,6 +332,10 @@ export const serviceListenerPlugin: Plugin<Listenable, Component> = (service, co
         unmount?.();
     };
 };
+
+function isComponent(target: unknown) : target is Component {
+    return  !!target && typeof target === "object" && "forceUpdate" in target;
+}
 
 interface Listenable {
     listen(listener: () => void): () => void;
