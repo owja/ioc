@@ -1,23 +1,22 @@
+import type {MaybeToken} from "./types";
 import {Container} from "./container";
-import {NOCACHE} from "./symbol";
-import {MaybeToken} from "./token";
+import {NOCACHE} from "./tags";
 
-export function define<T, Target extends {[key in Prop]: T}, Prop extends string>(
+export function define<T, Target extends {[key in Prop]: T}, Prop extends keyof Target>(
     target: Target,
     property: Prop,
     container: Container,
     token: MaybeToken<T>,
-    args: symbol[],
+    tags: symbol[],
 ) {
     Object.defineProperty(target, property, {
-        get: function () {
-            const value = container.get<any>(token, args, this);
-            if (args.indexOf(NOCACHE) === -1) {
+        get: function <R>(this: R): T {
+            const value = container.get<T>(token, tags, this);
+            if (tags.indexOf(NOCACHE) === -1)
                 Object.defineProperty(this, property, {
                     value,
                     enumerable: true,
                 });
-            }
             return value;
         },
         configurable: true,

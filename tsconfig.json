@@ -1,3 +1,5 @@
 {
-  "extends": "@owja/typescript-config"
+  "extends": "@owja/typescript-config",
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/example", "src/**/*.test.ts"]
 }
