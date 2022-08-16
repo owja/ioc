@@ -9,9 +9,9 @@ export interface Item<T> {
     plugins: Plugin<T>[];
 }
 
-export type Plugin<Dependency = unknown, Target = unknown> = (
+export type Plugin<Dependency = unknown> = (
     dependency: Dependency,
-    target: Target | undefined,
+    target: unknown,
     tags: symbol[],
     token: MaybeToken<Dependency>,
     container: Container,
