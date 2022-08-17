@@ -53,7 +53,7 @@ class ChildWithCtorArg implements ITestClass {
     childOne!: ITestClass;
 }
 
-type twoArgsITestClass = ITestClass & { name2: string };
+type twoArgsITestClass = ITestClass & {name2: string};
 class With2CtorArgs implements twoArgsITestClass {
     constructor(public name: string, public name2: string) {}
 }
@@ -63,7 +63,6 @@ class ChildWith2CtorArgs implements ITestClass {
     @inject<unknown, ConstructorParameters<typeof With2CtorArgs>>(TYPE.with2CtorArgs, [], "with", "two args")
     childOne!: twoArgsITestClass;
 }
-
 
 class ExtendedClassTest extends Parent {}
 

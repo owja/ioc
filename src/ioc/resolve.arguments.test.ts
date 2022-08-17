@@ -5,20 +5,20 @@ import {token} from "./token";
 import {createResolve} from "./createResolve";
 
 class WithArguments {
-  constructor(public a: number, public b: number) {}
+    constructor(public a: number, public b: number) {}
 }
 class WithoutArguments {
-  public a: number;
-  constructor() {
-    this.a = 1;
-  }
+    public a: number;
+    constructor() {
+        this.a = 1;
+    }
 }
 
 const TYPE = {
-  classWithArguments: token<WithArguments>("classWithArguments"),
-  classWithoutArguments: token<WithoutArguments>("classWithoutArguments"),
-  factoryWithArguments: token<WithArguments>("factoryWithArguments"),
-  factoryWithoutArguments: token<WithoutArguments>("factoryWithoutArguments"),
+    classWithArguments: token<WithArguments>("classWithArguments"),
+    classWithoutArguments: token<WithoutArguments>("classWithoutArguments"),
+    factoryWithArguments: token<WithArguments>("factoryWithArguments"),
+    factoryWithoutArguments: token<WithoutArguments>("factoryWithoutArguments"),
 };
 
 const container = new Container();
@@ -30,36 +30,42 @@ container.bind(TYPE.factoryWithoutArguments).toFactory(() => new WithoutArgument
 const resolve = createResolve(container);
 
 class ResolveTest {
-  classWithArguments = resolve(TYPE.classWithArguments);
-  classWithoutArguments = resolve(TYPE.classWithoutArguments);
-  factoryWithArguments = resolve(TYPE.factoryWithArguments);
-  factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments);
+    classWithArguments = resolve(TYPE.classWithArguments);
+    classWithoutArguments = resolve(TYPE.classWithoutArguments);
+    factoryWithArguments = resolve(TYPE.factoryWithArguments);
+    factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments);
 }
 
 describe("Resolve", () => {
-  test("resolves class with constructor arguments", () => {
-    const resolveTest = new ResolveTest();
-    const resolved = resolveTest.classWithArguments(1, 2)
-    expect(resolved.a).toEqual(1);
-    expect(resolved.b).toEqual(2);
-  });
+    test("resolves class with constructor arguments", () => {
+        const resolveTest = new ResolveTest();
+        const resolved = resolveTest.classWithArguments(1, 2);
+        expect(resolved.a).toEqual(1);
+        expect(resolved.b).toEqual(2);
+    });
 
-  test("resolves class without constructor arguments", () => {
-    const resolveTest = new ResolveTest();
-    const resolved = resolveTest.classWithoutArguments<ResolveTest, ConstructorParameters<typeof WithoutArguments>>()
-    expect(resolved.a).toEqual(1);
-  });
+    test("resolves class without constructor arguments", () => {
+        const resolveTest = new ResolveTest();
+        const resolved = resolveTest.classWithoutArguments<
+            ResolveTest,
+            ConstructorParameters<typeof WithoutArguments>
+        >();
+        expect(resolved.a).toEqual(1);
+    });
 
-  test("resolves factory with constructor arguments", () => {
-    const resolveTest = new ResolveTest();
-    const resolved = resolveTest.factoryWithArguments<ResolveTest, ConstructorParameters<typeof WithArguments>>(1, 2)
-    expect(resolved.a).toEqual(1);
-    expect(resolved.b).toEqual(2);
-  });
+    test("resolves factory with constructor arguments", () => {
+        const resolveTest = new ResolveTest();
+        const resolved = resolveTest.factoryWithArguments<ResolveTest, ConstructorParameters<typeof WithArguments>>(
+            1,
+            2,
+        );
+        expect(resolved.a).toEqual(1);
+        expect(resolved.b).toEqual(2);
+    });
 
-  test("resolves factory without constructor arguments", () => {
-    const resolveTest = new ResolveTest();
-    const resolved = resolveTest.factoryWithoutArguments()
-    expect(resolved.a).toEqual(1);
-  });
+    test("resolves factory without constructor arguments", () => {
+        const resolveTest = new ResolveTest();
+        const resolved = resolveTest.factoryWithoutArguments();
+        expect(resolved.a).toEqual(1);
+    });
 });

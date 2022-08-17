@@ -9,9 +9,8 @@ const TYPE = {
     oneArg: token<OneArg>("oneArg"),
     twoArgs: token<TwoArgs>("twoArg"),
     factoryOneArg: token<string>("factoryOneArg"),
-    factoryTwoArg: token<string>("factoryTwoArgs")
+    factoryTwoArg: token<string>("factoryTwoArgs"),
 };
-
 
 class OneArg {
     constructor(public name: string) {}
@@ -42,7 +41,6 @@ class ctorArgumentsWireTest {
         wire(this, "oneArg", TYPE.oneArg, [], "with one arg");
         wire(this, "twoArgs", TYPE.twoArgs, [], "with", "two args");
     }
-
 }
 
 class factoriesArgumentsWireTest {
@@ -53,7 +51,6 @@ class factoriesArgumentsWireTest {
         wire(this, "oneArg", TYPE.factoryOneArg, [], "with one arg");
         wire(this, "twoArgs", TYPE.factoryTwoArg, [], "with", "two args");
     }
-
 }
 
 let count: number;
@@ -62,7 +59,6 @@ container.bind(TYPE.oneArg).to(OneArg);
 container.bind(TYPE.twoArgs).to(TwoArgs);
 container.bind(TYPE.factoryOneArg).toFactory((a: string) => a);
 container.bind(TYPE.factoryTwoArg).toFactory((a: string, b: string) => `${a} - ${b}`);
-
 
 describe("Wire", () => {
     test("resolves new data only on first access", () => {
