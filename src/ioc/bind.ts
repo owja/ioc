@@ -6,7 +6,7 @@ export class Bind<T> {
     constructor(private _target: Item<T>) {}
 
     to(object: NewAble<T>): Options<T> {
-        this._target.injected = (...args: any[]) => new object(...args);
+        this._target.injected = (...args: unknown[]) => new object(...args);
         return new Options<T>(this._target);
     }
 
