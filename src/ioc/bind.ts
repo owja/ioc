@@ -5,8 +5,8 @@ import {PluginOptions} from "./pluginOptions";
 export class Bind<T> {
     constructor(private _target: Item<T>) {}
 
-    to(object: NewAble<T>): Options<T> {
-        this._target.injected = (...args: unknown[]) => new object(...args);
+    to<O extends NewAble<T>>(object: O): Options<T> {
+        this._target.injected = (...args: ConstructorParameters<O>[]) => new object(...args);
         return new Options<T>(this._target);
     }
 
