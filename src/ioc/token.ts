@@ -1,32 +1,10 @@
-export function token<T>(name: string) {
-    return {type: Symbol(name)} as Token<T>;
-}
+import type {MaybeToken, Token} from "./types";
 
-declare const typeMarker: unique symbol;
+export const token = <T>(name: string) => ({type: Symbol(name)} as Token<T>);
 
-export interface Token<T> {
-    type: symbol;
-    [typeMarker]: T;
-}
+const isToken = <T>(token: MaybeToken<T>): token is Token<T> => typeof token != "symbol";
 
-export type MaybeToken<T = unknown> = Token<T> | symbol;
+export const stringifyToken = (token: MaybeToken): string =>
+    isToken(token) ? `Token(${token.type.toString()})` : token.toString();
 
-function isToken<T>(token: MaybeToken<T>): token is Token<T> {
-    return typeof token != "symbol";
-}
-
-export function stringifyToken(token: MaybeToken): string {
-    if (isToken(token)) {
-        return `Token(${token.type.toString()})`;
-    } else {
-        return token.toString();
-    }
-}
-
-export function getType(token: MaybeToken): symbol {
-    if (isToken(token)) {
-        return token.type;
-    } else {
-        return token;
-    }
-}
+export const getType = (token: MaybeToken): symbol => (isToken(token) ? token.type : token);

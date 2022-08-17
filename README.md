@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/@owja/ioc.svg)](https://badge.fury.io/js/%40owja%2Fioc)
 [![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.js.svg?compression=brotli&label=size&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.js)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/owja/ioc/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/owja/ioc/tree/master)
 
 This library implements dependency injection for javascript and typescript.
 
@@ -299,9 +300,9 @@ The plugin is a simple function which has access to the dependency, the target (
 the arguments which are passed, the token or symbol which represents the dependency and the container.
 
 ```ts
-type Plugin<Dependency = any, Target = any> = (
+type Plugin<Dependency = unknown> = (
     dependency: Dependency,
-    target: Target | undefined,
+    target: unknown,
     args: symbol[],
     token: MaybeToken<Dependency>,
     container: Container,
@@ -319,8 +320,9 @@ import {Component} from "preact";
 
 export const SUBSCRIBE = Symbol();
 
-export const serviceListenerPlugin: Plugin<Listenable, Component> = (service, component, args) => {
+export const serviceListenerPlugin: Plugin<Listenable> = (service, component, args) => {
     if (args.indexOf(SUBSCRIBE) === -1 || !component) return;
+    if (!isComponent(component)) return;
 
     const unsubscribe = service.listen(() => component.forceUpdate());
     const unmount = component.componentWillUnmount;
@@ -330,6 +332,10 @@ export const serviceListenerPlugin: Plugin<Listenable, Component> = (service, co
         unmount?.();
     };
 };
+
+function isComponent(target: unknown) : target is Component {
+    return  !!target && typeof target === "object" && "forceUpdate" in target;
+}
 
 interface Listenable {
     listen(listener: () => void): () => void;
@@ -391,7 +397,7 @@ class Index extends Component {
 ### Prevent Plugins from Execution
 
 In case you add a plugin it is executed every time the dependency is resolved. If you want to prevent this you can 
-add the `NOPLUGINS` symbol to the arguments:
+add the `NOPLUGINS` tag to the arguments:
 
 ```ts
 import {NOPLUGINS} from "@owja/ioc";

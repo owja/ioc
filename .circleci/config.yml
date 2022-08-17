@@ -1,0 +1,40 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7
+
+jobs:
+  code-style:
+    docker:
+      - image: cimg/node:18.7
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Run Linter
+          command: npm run lint          
+      - run:
+          name: Run Prettier
+          command: npm run prettier
+  build:
+    docker:
+      - image: cimg/node:18.7
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          name: Run Build
+          command: npm run build          
+
+workflows:
+  checks:
+    jobs:
+      - node/test:
+          version: '18.7'
+          pkg-manager: npm
+      - code-style
+  build:
+    jobs:
+      - build

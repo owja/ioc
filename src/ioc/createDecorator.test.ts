@@ -1,7 +1,7 @@
 import {Container} from "./container";
-import {NOCACHE} from "./symbol";
+import {NOCACHE} from "./tags";
 
-import {createDecorator} from "./decorator";
+import {createDecorator} from "./createDecorator";
 
 const container = new Container();
 const inject = createDecorator(container);
