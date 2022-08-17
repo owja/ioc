@@ -6,7 +6,7 @@ export class Bind<T> {
     constructor(private _target: Item<T>) {}
 
     to<O extends NewAble<T>>(object: O): Options<T> {
-        this._target.injected = (...args: ConstructorParameters<O>[]) => new object(...args);
+        this._target.injected = (...ctorArgs: ConstructorParameters<O>[]) => new object(...ctorArgs);
         return new Options<T>(this._target);
     }
 

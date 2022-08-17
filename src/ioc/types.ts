@@ -18,10 +18,10 @@ export type Plugin<Dependency = unknown> = (
 ) => void;
 
 export interface NewAble<T> {
-    new (...args: any[]): T;
+    new (...ctorArgs: any[]): T;
 }
 
-export type Factory<T> = (...args: any[]) => T;
+export type Factory<T> = (...factoryArgs: any[]) => T;
 export type Value<T> = T;
 
 // tokens

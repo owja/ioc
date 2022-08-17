@@ -26,14 +26,14 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown, ctorArgs: unknown[] = []): T {
+    get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown, injectedArgs: unknown[] = []): T {
         const item = <Item<T> | undefined>this._registry.get(getType(token));
 
         if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
         const value = isFactory(item.injected)
             ? !item.singleton
-                ? item.injected(...ctorArgs)
+                ? item.injected(...injectedArgs)
                 : (item.cache = item.cache || item.injected())
             : item.injected;
 
