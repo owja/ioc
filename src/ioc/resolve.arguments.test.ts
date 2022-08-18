@@ -20,11 +20,11 @@ const TYPE = {
     factoryWithArguments: token<WithArguments>("factoryWithArguments"),
     factoryWithoutArguments: token<WithoutArguments>("factoryWithoutArguments"),
 };
-
+const factory = (a: number, b: number) => new WithArguments(a, b);
 const container = new Container();
 container.bind(TYPE.classWithArguments).to(WithArguments);
 container.bind(TYPE.classWithoutArguments).to(WithoutArguments);
-container.bind(TYPE.factoryWithArguments).toFactory((a: number, b: number) => new WithArguments(a, b));
+container.bind(TYPE.factoryWithArguments).toFactory(factory);
 container.bind(TYPE.factoryWithoutArguments).toFactory(() => new WithoutArguments());
 
 const resolve = createResolve(container);
@@ -55,7 +55,7 @@ describe("Resolve", () => {
 
     test("resolves factory with constructor arguments", () => {
         const resolveTest = new ResolveTest();
-        const resolved = resolveTest.factoryWithArguments<ResolveTest, ConstructorParameters<typeof WithArguments>>(
+        const resolved = resolveTest.factoryWithArguments<ResolveTest, Parameters<typeof factory>>(
             1,
             2,
         );
