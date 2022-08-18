@@ -55,10 +55,7 @@ describe("Resolve", () => {
 
     test("resolves factory with constructor arguments", () => {
         const resolveTest = new ResolveTest();
-        const resolved = resolveTest.factoryWithArguments<ResolveTest, Parameters<typeof factory>>(
-            1,
-            2,
-        );
+        const resolved = resolveTest.factoryWithArguments<ResolveTest, Parameters<typeof factory>>(1, 2);
         expect(resolved.a).toEqual(1);
         expect(resolved.b).toEqual(2);
     });
