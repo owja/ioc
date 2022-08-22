@@ -1,6 +1,6 @@
 {
   "name": "@owja/ioc",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
@@ -47,7 +47,7 @@
     "@owja/browserslist-config": "^1.0.1",
     "@owja/prettier-config": "^1.0.2",
     "@owja/typescript-config": "^1.0.2",
-    "@types/jest": "^27.5.1",
+    "@types/jest": "^28.1.7",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
     "eslint": "^8.15.0",
