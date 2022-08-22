@@ -1,4 +1,4 @@
-import type {Factory, Injected, Item, MaybeToken, Plugin} from "./types";
+import type {Factory, Injected, Item, BindedToken, MaybeToken, Plugin} from "./types";
 import {Bind} from "./bind";
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./tags";
@@ -26,7 +26,7 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown, injectedArgs: unknown[] = []): T {
+    get<T, U extends Array<unknown>>(token: BindedToken<T, U>, tags: symbol[] = [], target?: unknown, injectedArgs: Array<unknown> = []): T {
         const item = <Item<T> | undefined>this._registry.get(getType(token));
 
         if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;
