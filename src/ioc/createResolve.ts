@@ -3,7 +3,7 @@ import type {Container} from "./container";
 import {NOCACHE} from "./tags";
 
 export function createResolve(container: Container) {
-    return <T = never>(token: MaybeToken<T>, tags: symbol[] = []) => {
+    return <T>(token: MaybeToken<T>, tags: symbol[] = []) => {
         let value: T;
         return function <R, K extends unknown[]>(this: R, ...injectedArgs: K): T {
             if (tags.indexOf(NOCACHE) !== -1 || value === undefined) {
