@@ -46,16 +46,13 @@ describe("Resolve", () => {
 
     test("resolves class without constructor arguments", () => {
         const resolveTest = new ResolveTest();
-        const resolved = resolveTest.classWithoutArguments<
-            ResolveTest,
-            ConstructorParameters<typeof WithoutArguments>
-        >();
+        const resolved = resolveTest.classWithoutArguments();
         expect(resolved.a).toEqual(1);
     });
 
     test("resolves factory with constructor arguments", () => {
         const resolveTest = new ResolveTest();
-        const resolved = resolveTest.factoryWithArguments<ResolveTest, Parameters<typeof factory>>(1, 2);
+        const resolved = resolveTest.factoryWithArguments(1, 2);
         expect(resolved.a).toEqual(1);
         expect(resolved.b).toEqual(2);
     });
