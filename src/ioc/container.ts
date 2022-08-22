@@ -26,7 +26,7 @@ export class Container {
         return this;
     }
 
-    get<T, U extends Array<unknown>>(token: BindedToken<T, U>, tags: symbol[] = [], target?: unknown, injectedArgs: Array<unknown> = []): T {
+    get<T, U extends Array<unknown> = never>(token: BindedToken<T, U> | MaybeToken<T>, tags: symbol[] = [], target?: unknown, injectedArgs: Array<unknown> = []): T {
         const item = <Item<T> | undefined>this._registry.get(getType(token));
 
         if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;

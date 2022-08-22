@@ -1,4 +1,4 @@
-import type {BindedToken} from "./types";
+import type {BindedToken, MaybeToken} from "./types";
 import {Container} from "./container";
 import {NOCACHE} from "./tags";
 
@@ -6,7 +6,7 @@ export function define<T, Target extends {[key in Prop]: T}, Prop extends keyof 
     target: Target,
     property: Prop,
     container: Container,
-    token: BindedToken<T, K>,
+    token: BindedToken<T, K> | MaybeToken<T>,
     tags: symbol[],
     ...injectedArgs: K
 ) {
