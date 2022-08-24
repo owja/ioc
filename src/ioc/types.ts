@@ -36,6 +36,7 @@ export interface Token<T> {
 declare const bindedArguments: unique symbol;
 export type BindedToken<T, U> = U extends Array<unknown> ? Token<T> & {[bindedArguments]: U} : Token<T>;
 
+// compiles to empty function
 export function setBindedArguments<T, U>(token: MaybeToken<T>): asserts token is BindedToken<T, U> {
     token;
 }
