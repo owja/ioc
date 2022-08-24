@@ -18,7 +18,7 @@ export type Plugin<Dependency = unknown> = (
 ) => void;
 
 export interface NewAble<T> {
-    new (...ctorArgs: any): T;
+    new (...ctorArgs: any[]): T;
 }
 
 export type Factory<T> = (...factoryArgs: any) => T;
