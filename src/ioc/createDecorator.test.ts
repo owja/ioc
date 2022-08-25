@@ -49,7 +49,7 @@ class WithCtorArg implements ITestClass {
 
 class ChildWithCtorArg implements ITestClass {
     name = "child with arg";
-    @inject<unknown, ConstructorParameters<typeof WithCtorArg>>(TYPE.withCtorArgs, [], "with arg")
+    @inject<ITestClass, ConstructorParameters<typeof WithCtorArg>>(TYPE.withCtorArgs, [], "with arg")
     childOne!: ITestClass;
 }
 

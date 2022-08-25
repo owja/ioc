@@ -38,7 +38,13 @@ class ctorArgumentsWireTest {
     twoArgs!: TwoArgs;
 
     constructor() {
-        wire(this, "oneArg", TYPE.oneArg, [], "with one arg");
+        wire<OneArg, this, "oneArg", ConstructorParameters<typeof OneArg>>(
+            this,
+            "oneArg",
+            TYPE.oneArg,
+            [],
+            "with one arg",
+        );
         wire(this, "twoArgs", TYPE.twoArgs, [], "with", "two args");
     }
 }
