@@ -12,6 +12,9 @@ interface ITestClass {
     childTwo?: ITestClass;
 }
 
+const factoryOneArg = (a: string) => a;
+const factoryTwoArg = (a: string, b: string) => `${a} - ${b}`;
+
 interface ICircular {
     name: string;
     circular?: ICircular;
@@ -136,10 +139,10 @@ class CacheTest {
 }
 
 class factoryWithArguments {
-    @inject<string, [string]>(TYPE.factoryOneArg, [], "hello")
+    @inject<string, Parameters<typeof factoryOneArg>>(TYPE.factoryOneArg, [], "hello")
     factOne!: string;
 
-    @inject<string, [string, string]>(TYPE.factoryTwoArgs, [], "hello", "world")
+    @inject<string, Parameters<typeof factoryTwoArg>>(TYPE.factoryTwoArgs, [], "hello", "world")
     factTwo!: string;
 }
 
@@ -157,8 +160,8 @@ container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 
 let count: number;
 container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
-container.bind<string>(TYPE.factoryOneArg).toFactory((a: string) => a);
-container.bind<string>(TYPE.factoryTwoArgs).toFactory((a: string, b: string) => `${a} - ${b}`);
+container.bind<string>(TYPE.factoryOneArg).toFactory(factoryOneArg);
+container.bind<string>(TYPE.factoryTwoArgs).toFactory(factoryTwoArg);
 
 describe("Injector", () => {
     let instance: Parent;
@@ -215,7 +218,7 @@ describe("Injector", () => {
     });
 
     test("can not inject a circular dependency when accessing the dependency inside of constructor", () => {
-        expect(() => container.get<ICircular>(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
+        expect(() => container.get(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
     });
 
     test("resolves only once with cache enabled by default", () => {
