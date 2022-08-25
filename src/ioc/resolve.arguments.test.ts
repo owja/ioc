@@ -35,6 +35,7 @@ const resolve = createResolve(container);
 
 class ResolveTest {
     classWithArguments = resolve(TYPE.classWithArguments);
+    classWithArgumentsTypeSafe = resolve<WithArguments, ConstructorParameters<typeof WithArguments>>(TYPE.classWithArguments);
     classWithoutArguments = resolve(TYPE.classWithoutArguments);
     factoryWithArguments = resolve(TYPE.factoryWithArguments);
     factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments);
@@ -46,6 +47,11 @@ describe("Resolve", () => {
         const resolved = resolveTest.classWithArguments(1, 2);
         expect(resolved.a).toEqual(1);
         expect(resolved.b).toEqual(2);
+
+        // type safe
+        const resolvedTypeSafe = resolveTest.classWithArgumentsTypeSafe(1, 2); // only accepts two numbers
+        expect(resolvedTypeSafe.a).toEqual(1);
+        expect(resolvedTypeSafe.b).toEqual(2);
     });
 
     test("resolves class without constructor arguments", () => {
@@ -69,7 +75,7 @@ describe("Resolve", () => {
 
     test("resolves type safe token", () => {
         const typeSafeResolve = resolve(typeSafeToken);
-        const resolved = typeSafeResolve(1, 2);
+        const resolved = typeSafeResolve(1, 2); // only accepts two numbers
         expect(resolved.a).toEqual(1);
         expect(resolved.b).toEqual(2);
     });
