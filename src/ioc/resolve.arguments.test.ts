@@ -3,7 +3,7 @@ import {Container} from "./container";
 import {token} from "./token";
 
 import {createResolve} from "./createResolve";
-import { setBindedArguments } from "./types";
+import {setBindedArguments} from "./types";
 
 class WithArguments {
     constructor(public a: number, public b: number) {}
@@ -35,7 +35,9 @@ const resolve = createResolve(container);
 
 class ResolveTest {
     classWithArguments = resolve(TYPE.classWithArguments);
-    classWithArgumentsTypeSafe = resolve<WithArguments, ConstructorParameters<typeof WithArguments>>(TYPE.classWithArguments);
+    classWithArgumentsTypeSafe = resolve<WithArguments, ConstructorParameters<typeof WithArguments>>(
+        TYPE.classWithArguments,
+    );
     classWithoutArguments = resolve(TYPE.classWithoutArguments);
     factoryWithArguments = resolve(TYPE.factoryWithArguments);
     factoryWithoutArguments = resolve(TYPE.factoryWithoutArguments);
