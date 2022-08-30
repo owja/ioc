@@ -1,11 +1,10 @@
-import {Container, token, createDecorator, createResolve, createWire, NOCACHE, NOPLUGINS, setBindedArguments} from "./";
+import {Container, token, createDecorator, createResolve, createWire, NOCACHE, NOPLUGINS} from "./";
 import {Container as ContainerOriginal} from "./ioc/container";
 import {token as tokenOriginal} from "./ioc/token";
 import {createDecorator as createDecoratorOriginal} from "./ioc/createDecorator";
 import {createWire as createWireOriginal} from "./ioc/createWire";
 import {createResolve as createResolveOriginal} from "./ioc/createResolve";
 import {NOCACHE as NOCACHEOriginal, NOPLUGINS as NOPLUGINSOriginal} from "./ioc/tags";
-import {setBindedArguments as setBindedArgumentsOriginal} from "./ioc/types";
 
 describe("Module", () => {
     test('should export "Container" class', () => {
@@ -34,9 +33,5 @@ describe("Module", () => {
 
     test('should export "NOPLUGINS" symbol/tag', () => {
         expect(NOPLUGINS).toBe(NOPLUGINSOriginal);
-    });
-
-    test('should export "setBindedArguments" function', () => {
-        expect(setBindedArguments).toBe(setBindedArgumentsOriginal);
     });
 });

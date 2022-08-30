@@ -21,22 +21,16 @@ export interface NewAble<T> {
     new (...ctorArgs: any[]): T;
 }
 
-export type Factory<T> = (...factoryArgs: any) => T;
+export type Factory<T, U extends Array<unknown> = any> = (...factoryArgs: U) => T;
 export type Value<T> = T;
 
 // tokens
-export type MaybeToken<T = unknown> = Token<T> | symbol;
+export type MaybeToken<T = unknown, U extends Array<unknown> = unknown[]> = Token<T, U> | symbol;
 
 declare const typeMarker: unique symbol;
-export interface Token<T> {
+declare const bindedArguments: unique symbol;
+export interface Token<T, U extends Array<unknown>> {
     type: symbol;
     [typeMarker]: T;
-}
-
-declare const bindedArguments: unique symbol;
-export type BindedToken<T, U> = U extends Array<unknown> ? Token<T> & {[bindedArguments]: U} : Token<T>;
-
-// compiles to empty function
-export function setBindedArguments<T, U>(token: MaybeToken<T>): asserts token is BindedToken<T, U> {
-    token;
+    [bindedArguments]: U;
 }
