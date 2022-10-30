@@ -10,6 +10,6 @@ export class Example {
     @inject(TYPE.MyOtherService)
     readonly myOtherService!: MyOtherServiceInterface;
 
-    @inject(TYPE.MyOtherService, NOCACHE)
+    @inject(TYPE.MyOtherService, [NOCACHE])
     readonly myUncachedOtherService!: MyOtherServiceInterface;
 }

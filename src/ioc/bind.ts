@@ -2,15 +2,15 @@ import type {Item, NewAble, Factory, Value} from "./types";
 import {Options} from "./options";
 import {PluginOptions} from "./pluginOptions";
 
-export class Bind<T> {
+export class Bind<T, U extends Array<unknown>> {
     constructor(private _target: Item<T>) {}
 
-    to(object: NewAble<T>): Options<T> {
-        this._target.injected = () => new object();
+    to<O extends NewAble<T>>(object: O): Options<T> {
+        this._target.injected = (...ctorArgs: U): T => new object(...ctorArgs);
         return new Options<T>(this._target);
     }
 
-    toFactory(factory: Factory<T>): Options<T> {
+    toFactory(factory: Factory<T, U>): Options<T> {
         this._target.injected = factory;
         return new Options<T>(this._target);
     }

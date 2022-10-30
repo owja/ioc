@@ -1,4 +1,4 @@
-import type {Factory, Injected, Item, MaybeToken, Plugin} from "./types";
+import type {Factory, Injected, Item, Token, MaybeToken, Plugin} from "./types";
 import {Bind} from "./bind";
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./tags";
@@ -10,12 +10,12 @@ export class Container {
     private _snapshots: typeof this._registry[] = [];
     private _plugins: Plugin[] = [];
 
-    bind<T = never>(token: MaybeToken<T>): Bind<T> {
-        return new Bind<T>(this._createItem<T>(token));
+    bind<T = never, U extends Array<unknown> = never>(token: MaybeToken<T>): Bind<T, U> {
+        return new Bind<T, U>(this._createItem<T>(token));
     }
 
-    rebind<T = never>(token: MaybeToken<T>): Bind<T> {
-        return this.remove(token).bind<T>(token);
+    rebind<T = never, U extends Array<unknown> = never>(token: MaybeToken<T>): Bind<T, U> {
+        return this.remove(token).bind<T, U>(token);
     }
 
     remove(token: MaybeToken): Container {
@@ -26,14 +26,19 @@ export class Container {
         return this;
     }
 
-    get<T = never>(token: MaybeToken<T>, tags: symbol[] = [], target?: unknown): T {
+    get<T, U extends Array<unknown> = never>(
+        token: Token<T, U> | MaybeToken<T>,
+        tags: symbol[] = [],
+        target?: unknown,
+        injectedArgs: Array<unknown> = [],
+    ): T {
         const item = <Item<T> | undefined>this._registry.get(getType(token));
 
         if (item === undefined || item.injected === undefined) throw `nothing bound to ${stringifyToken(token)}`;
 
         const value = isFactory(item.injected)
             ? !item.singleton
-                ? item.injected()
+                ? item.injected(...injectedArgs)
                 : (item.cache = item.cache || item.injected())
             : item.injected;
 

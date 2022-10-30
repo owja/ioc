@@ -12,6 +12,9 @@ interface ITestClass {
     childTwo?: ITestClass;
 }
 
+const factoryOneArg = (a: string) => a;
+const factoryTwoArg = (a: string, b: string) => `${a} - ${b}`;
+
 interface ICircular {
     name: string;
     circular?: ICircular;
@@ -20,6 +23,10 @@ interface ICircular {
 
 const TYPE = {
     parent: Symbol.for("parent"),
+    withCtorArgs: Symbol.for("withArgs"),
+    with2CtorArgs: Symbol.for("with2Args"),
+    factoryOneArg: Symbol.for("factoryOneArg"),
+    factoryTwoArgs: Symbol.for("factoryTwoArgs"),
     child1: Symbol.for("child1"),
     child2: Symbol.for("child2"),
     child3: Symbol.for("child3"),
@@ -37,6 +44,27 @@ class Parent implements ITestClass {
     childOne!: ITestClass;
     @inject(TYPE.child2)
     childTwo!: ITestClass;
+}
+
+class WithCtorArg implements ITestClass {
+    constructor(public name: string) {}
+}
+
+class ChildWithCtorArg implements ITestClass {
+    name = "child with arg";
+    @inject<ITestClass, ConstructorParameters<typeof WithCtorArg>>(TYPE.withCtorArgs, [], "with arg")
+    childOne!: ITestClass;
+}
+
+type twoArgsITestClass = ITestClass & {name2: string};
+class With2CtorArgs implements twoArgsITestClass {
+    constructor(public name: string, public name2: string) {}
+}
+
+class ChildWith2CtorArgs implements ITestClass {
+    name = "child with 2 args";
+    @inject<unknown, ConstructorParameters<typeof With2CtorArgs>>(TYPE.with2CtorArgs, [], "with", "two args")
+    childOne!: twoArgsITestClass;
 }
 
 class ExtendedClassTest extends Parent {}
@@ -106,11 +134,21 @@ class CircularFail2 implements ICircular {
 class CacheTest {
     @inject(TYPE.cacheTest)
     cached!: number;
-    @inject(TYPE.cacheTest, NOCACHE)
+    @inject(TYPE.cacheTest, [NOCACHE])
     notCached!: number;
 }
 
+class factoryWithArguments {
+    @inject<string, Parameters<typeof factoryOneArg>>(TYPE.factoryOneArg, [], "hello")
+    factOne!: string;
+
+    @inject<string, Parameters<typeof factoryTwoArg>>(TYPE.factoryTwoArgs, [], "hello", "world")
+    factTwo!: string;
+}
+
 container.bind<ITestClass>(TYPE.parent).to(Parent);
+container.bind<ITestClass>(TYPE.withCtorArgs).to(WithCtorArg);
+container.bind<ITestClass>(TYPE.with2CtorArgs).to(With2CtorArgs);
 container.bind<ITestClass>(TYPE.child1).to(ChildOne);
 container.bind<ITestClass>(TYPE.child2).to(ChildTwo);
 container.bind<ITestClass>(TYPE.child3).to(ChildThree);
@@ -122,6 +160,8 @@ container.bind<ICircular>(TYPE.circular2).toFactory(() => new Circular2("two"));
 
 let count: number;
 container.bind<number>(TYPE.cacheTest).toFactory(() => ++count);
+container.bind<string>(TYPE.factoryOneArg).toFactory(factoryOneArg);
+container.bind<string>(TYPE.factoryTwoArgs).toFactory(factoryTwoArg);
 
 describe("Injector", () => {
     let instance: Parent;
@@ -152,6 +192,23 @@ describe("Injector", () => {
         expect(instance.childOne.childTwo?.childTwo?.name).toBe("parent");
     });
 
+    test("can inject with one arg", () => {
+        const child = new ChildWithCtorArg();
+        expect(child.childOne.name).toBe("with arg");
+    });
+
+    test("can inject with two args", () => {
+        const child = new ChildWith2CtorArgs();
+        expect(child.childOne.name).toBe("with");
+        expect(child.childOne.name2).toBe("two args");
+    });
+
+    test("can inject factories with arg(s)", () => {
+        const child = new factoryWithArguments();
+        expect(child.factOne).toBe("hello");
+        expect(child.factTwo).toBe("hello - world");
+    });
+
     test("can inject a circular dependency when accessing the dependency outside of constructor", () => {
         const instance1 = container.get<ICircular>(TYPE.circular1);
         const instance2 = container.get<ICircular>(TYPE.circular2);
@@ -161,7 +218,7 @@ describe("Injector", () => {
     });
 
     test("can not inject a circular dependency when accessing the dependency inside of constructor", () => {
-        expect(() => container.get<ICircular>(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
+        expect(() => container.get(TYPE.circularFail1)).toThrow("Maximum call stack size exceeded");
     });
 
     test("resolves only once with cache enabled by default", () => {

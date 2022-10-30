@@ -18,17 +18,19 @@ export type Plugin<Dependency = unknown> = (
 ) => void;
 
 export interface NewAble<T> {
-    new (...args: unknown[]): T;
+    new (...ctorArgs: any[]): T;
 }
 
-export type Factory<T> = () => T;
+export type Factory<T, U extends Array<unknown> = any> = (...factoryArgs: U) => T;
 export type Value<T> = T;
 
 // tokens
-export type MaybeToken<T = unknown> = Token<T> | symbol;
+export type MaybeToken<T = unknown, U extends Array<unknown> = unknown[]> = Token<T, U> | symbol;
 
 declare const typeMarker: unique symbol;
-export interface Token<T> {
+declare const bindedArguments: unique symbol;
+export interface Token<T, U extends Array<unknown>> {
     type: symbol;
     [typeMarker]: T;
+    [bindedArguments]: U;
 }
