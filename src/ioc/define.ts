@@ -7,13 +7,13 @@ export function define<T, Target extends {[key in Prop]: T}, Prop extends keyof 
     property: Prop,
     container: Container,
     token: Token<T, K> | MaybeToken<T>,
-    tags: symbol[],
+    tags: symbol[] | symbol,
     ...injectedArgs: K
 ) {
     Object.defineProperty(target, property, {
         get: function <R>(this: R): T {
             const value = container.get(token, tags, this, injectedArgs);
-            if (tags.indexOf(NOCACHE) === -1)
+            if ((typeof tags === "symbol" ? [tags] : tags).indexOf(NOCACHE) === -1)
                 Object.defineProperty(this, property, {
                     value,
                     enumerable: true,

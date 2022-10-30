@@ -5,7 +5,7 @@ import {define} from "./define";
 export function createDecorator(container: Container) {
     return <T, K extends Array<unknown>>(
         token: Token<T, K> | MaybeToken<T>,
-        tags: symbol[] = [],
+        tags: symbol[] | symbol = [],
         ...injectedArgs: K
     ) => {
         return function <Target extends {[key in Prop]: T}, Prop extends keyof Target>(
