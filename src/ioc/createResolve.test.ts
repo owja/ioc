@@ -15,7 +15,7 @@ const resolve = createResolve(container);
 class ResolveTest {
     cached = resolve(TYPE.cacheTest);
     notCached = resolve(TYPE.cacheTest, [NOCACHE]);
-    noPlugins = resolve(TYPE.cacheTest, [NOPLUGINS]);
+    noPlugins = resolve(TYPE.cacheTest, NOPLUGINS);
 }
 
 let count: number;

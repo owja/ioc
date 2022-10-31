@@ -2,6 +2,7 @@ import type {Factory, Injected, Item, Token, MaybeToken, Plugin} from "./types";
 import {Bind} from "./bind";
 import {getType, stringifyToken} from "./token";
 import {NOPLUGINS} from "./tags";
+import {valueOrArrayToArray} from "./utils";
 
 const isFactory = <T>(i: Injected<T>): i is Factory<T> => typeof i === "function";
 
@@ -28,7 +29,7 @@ export class Container {
 
     get<T, U extends Array<unknown> = never>(
         token: Token<T, U> | MaybeToken<T>,
-        tags: symbol[] = [],
+        tags: symbol[] | symbol = [],
         target?: unknown,
         injectedArgs: Array<unknown> = [],
     ): T {
@@ -42,7 +43,7 @@ export class Container {
                 : (item.cache = item.cache || item.injected())
             : item.injected;
 
-        if (tags.indexOf(NOPLUGINS) === -1)
+        if (valueOrArrayToArray(tags).indexOf(NOPLUGINS) === -1)
             item.plugins.concat(this._plugins).forEach((plugin) => {
                 plugin(value, target, tags, token, this);
             });

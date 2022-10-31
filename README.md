@@ -11,7 +11,7 @@ This library implements dependency injection for javascript and typescript.
 * Similar syntax to InversifyJS
 * Can be used without decorators
 * Less Features but **straight forward**
-* Can bind dependencies as **classes**, **factories** and **static values**
+* Can bind dependencies as **classes**, **factories** and **static values** and provide dependencie arguments or parameters if needed
 * Supports binding in **singleton scope**
 * **Cached** - Resolves only once in each dependent class by default
 * **Cache can switched off** directly at the inject decorator
@@ -50,7 +50,8 @@ const container = new Container();
 #### Binding a class
 
 This is the default way to bind a dependency. The class will get instantiated when the
-dependency gets resolved.
+dependency gets resolved. You will be able to pass down it's dependencie arguments once you resolve it.
+
 
 ```ts
 container.bind<ServiceInterface>(symbol).to(Service);
@@ -71,6 +72,7 @@ Factories are functions which will get called when the dependency gets resolved
 ```ts
 container.bind<ServiceInterface>(symbol).toFactory(() => new Service());
 container.bind<string>(symbol).toFactory(() => "just a string");
+container.bind<string>(symbol).toFactory((a: string) => `I need a string parameter: ${a}`);
 ```
 
 A factory can configured for singleton scope too. This way will only executed once.
@@ -153,7 +155,7 @@ Then we can use the decorator to inject the dependency.
 
 ```ts
 class Example {
-    @inject(symbol)
+    @inject(symbol/*, [tags], ...dependencie arguments*/)
     readonly service!: Interface;
     
     method() {
@@ -179,7 +181,7 @@ class Example {
     readonly service!: Interface;
     
     constructor() {
-        wire(this, "service", symbol);
+        wire(this, "service", symbol/*, [tags], ...dependencie arguments*/);
     }
     
     method() {
@@ -207,7 +209,7 @@ class Example {
     private readonly service = resolve<Interface>(symbol);
     
     method() {
-        this.service().doSomething();
+        this.service(/*...dependencie arguments*/).doSomething();
     }
 }
 ```
@@ -215,7 +217,7 @@ class Example {
 ```ts
 function Example() {
     const service = resolve<Interface>(symbol);
-    service().doSomething();
+    service(/*...dependencie arguments*/).doSomething();
 }
 ```
 
@@ -267,7 +269,7 @@ but it throws a type error if the types don't match:
 
 ```ts
 class Example {
-    @inject(TYPE.Service) // throws a type error because WrongInterface is not compatible with MyServiceInterface
+    @inject(TYPE.Service/*, [tags], ...dependencie arguments*/) // throws a type error because WrongInterface is not compatible with MyServiceInterface
     readonly service!: WrongInterface;
 }
 ```
@@ -276,7 +278,7 @@ Correkt:
 
 ```ts
 class Example {
-    @inject(TYPE.Service)
+    @inject(TYPE.Service/*, [tags], ...dependencie arguments*/)
     readonly service!: MyServiceInterface;
 }
 ```
@@ -361,7 +363,7 @@ In a component it is then executed when the dependency is resolved:
 
 ```ts
 class Index extends Component {
-    @inject(TYPE.TranslationService, [SUBSCRIBE])
+    @inject(TYPE.TranslationService, [SUBSCRIBE]/*, ...dependencie arguments*/)
     readonly service!: TranslatorInterface;
 
     render() {
@@ -380,14 +382,14 @@ class Index extends Component {
 
     constructor() {
         super();
-        wire(this, "service", TYPE.TranslationService, [SUBSCRIBE]);
+        wire(this, "service", TYPE.TranslationService, [SUBSCRIBE]/*, ...dependencie arguments*/);
     }
     
     [...]
 }
 
 class Index extends Component {
-    readonly service = resolve(TYPE.TranslationService, [SUBSCRIBE]);
+    readonly service = resolve(TYPE.TranslationService, [SUBSCRIBE]/*, ...dependencie arguments*/);
     
     [...]
 }
@@ -403,7 +405,7 @@ add the `NOPLUGINS` tag to the arguments:
 import {NOPLUGINS} from "@owja/ioc";
 
 class Example {
-    @inject(TYPE.MyService, [NOPLUGINS])
+    @inject(TYPE.MyService, [NOPLUGINS]/*, ...dependencie arguments*/)
     readonly service!: MyServiceInterface;
 }
 ```
@@ -483,10 +485,10 @@ import {MyServiceInterface} from "./service/my-service";
 import {MyOtherServiceInterface} from "./service/my-other-service";
 
 class Example {
-    @inject(TYPE.MyService)
+    @inject(TYPE.MyService/*, [tags], ...dependencie arguments*/)
     readonly myService!: MyServiceInterface;
 
-    @inject(TYPE.MyOtherService)
+    @inject(TYPE.MyOtherService/*, [tags], ...dependencie arguments*/)
     readonly myOtherService!: MyOtherServiceInterface;
 }
 
@@ -510,7 +512,7 @@ import {NOCACHE} from "@owja/ioc";
 class Example {
     // [...]
     
-    @inject(TYPE.MyOtherSerice, NOCACHE)
+    @inject(TYPE.MyOtherSerice, NOCACHE/*, ...dependencie arguments*/)
     readonly myOtherService!: MyOtherServiceInterface;
 }
 

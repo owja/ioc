@@ -142,7 +142,7 @@ class factoryWithArguments {
     @inject<string, Parameters<typeof factoryOneArg>>(TYPE.factoryOneArg, [], "hello")
     factOne!: string;
 
-    @inject<string, Parameters<typeof factoryTwoArg>>(TYPE.factoryTwoArgs, [], "hello", "world")
+    @inject<string, Parameters<typeof factoryTwoArg>>(TYPE.factoryTwoArgs, NOCACHE, "hello", "world")
     factTwo!: string;
 }
 
