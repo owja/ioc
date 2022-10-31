@@ -43,9 +43,11 @@ export class Container {
                 : (item.cache = item.cache || item.injected())
             : item.injected;
 
-        if (valueOrArrayToArray(tags).indexOf(NOPLUGINS) === -1)
+        const tagsArr = valueOrArrayToArray(tags);
+
+        if (tagsArr.indexOf(NOPLUGINS) === -1)
             item.plugins.concat(this._plugins).forEach((plugin) => {
-                plugin(value, target, tags, token, this);
+                plugin(value, target, tagsArr, token, this);
             });
 
         return value;
