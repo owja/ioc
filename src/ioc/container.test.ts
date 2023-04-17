@@ -147,7 +147,13 @@ describe("Container using symbols", () => {
 
     test("can not bind a constant value of undefined", () => {
         expect(() => container.bind<undefined>(exampleSymbol).toValue(undefined)).toThrow(
-            "cannot bind a value of type undefined",
+            "Cannot bind a value of type undefined or function",
+        );
+    });
+
+    test("can not bind a function with `toValue`", () => {
+        expect(() => container.bind<() => number>(exampleSymbol).toValue(() => 2)).toThrow(
+            "Cannot bind a value of type undefined or function",
         );
     });
 
