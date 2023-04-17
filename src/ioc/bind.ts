@@ -16,7 +16,8 @@ export class Bind<T, U extends Array<unknown>> {
     }
 
     toValue(value: Value<T>): PluginOptions<T> {
-        if (typeof value === "undefined" || typeof value === "function") throw "Cannot bind a value of type undefined or function";
+        if (typeof value === "undefined" || typeof value === "function")
+            throw "Cannot bind a value of type undefined or function";
         this._target.injected = value;
         return new PluginOptions<T>(this._target);
     }
