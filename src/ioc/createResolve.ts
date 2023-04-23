@@ -4,11 +4,14 @@ import {NOCACHE} from "./tags";
 import {valueOrArrayToArray} from "./utils";
 
 export function createResolve(container: Container) {
-    return <T, U extends Array<unknown>>(token: Token<T, U> | MaybeToken<T>, tags: symbol[] | symbol = []) => {
-        let value: T;
-        return function <R>(this: R, ...injectedArgs: U): T {
+    return <Dep, Args extends Array<unknown>>(
+        token: Token<Dep, Args> | MaybeToken<Dep>,
+        tags: symbol[] | symbol = [],
+    ) => {
+        let value: Dep;
+        return function <R>(this: R, ...args: Args): Dep {
             if (valueOrArrayToArray(tags).indexOf(NOCACHE) !== -1 || value === undefined) {
-                value = container.get(token, tags, this, injectedArgs);
+                value = container.get(token, tags, this, args);
             }
             return value;
         };

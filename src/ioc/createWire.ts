@@ -3,13 +3,13 @@ import type {Container} from "./container";
 import {define} from "./define";
 
 export function createWire(container: Container) {
-    return <Value, Target extends {[key in Prop]: Value}, Prop extends keyof Target, K extends Array<unknown>>(
+    return <Dep, Target extends {[key in Prop]: Dep}, Prop extends keyof Target, Args extends Array<unknown>>(
         target: Target,
         property: Prop,
-        token: Token<Value, K> | MaybeToken<Value>,
+        token: Token<Dep, Args> | MaybeToken<Dep>,
         tags: symbol[] | symbol = [],
-        ...injectedArgs: K
+        ...args: Args
     ) => {
-        define(target, property, container, token, tags, ...injectedArgs);
+        define(target, property, container, token, tags, ...args);
     };
 }

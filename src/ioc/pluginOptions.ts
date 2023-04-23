@@ -1,10 +1,10 @@
-import type {Item, Plugin} from "./types";
+import type {RegItem, Plugin} from "./types";
 
-export class PluginOptions<T> {
-    constructor(protected _target: Item<T>) {}
+export class PluginOptions<Dep, Args extends Array<unknown>> {
+    constructor(protected _regItem: RegItem<Dep, Args>) {}
 
-    withPlugin(plugin: Plugin<T>): PluginOptions<T> {
-        this._target.plugins.push(plugin);
+    withPlugin(plugin: Plugin<Dep>): PluginOptions<Dep, Args> {
+        this._regItem.plugins.push(plugin);
         return this;
     }
 }

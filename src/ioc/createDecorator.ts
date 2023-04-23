@@ -3,16 +3,16 @@ import type {Container} from "./container";
 import {define} from "./define";
 
 export function createDecorator(container: Container) {
-    return <T, K extends Array<unknown>>(
-        token: Token<T, K> | MaybeToken<T>,
+    return <Dep, Args extends Array<unknown>>(
+        token: Token<Dep, Args> | MaybeToken<Dep>,
         tags: symbol[] | symbol = [],
-        ...injectedArgs: K
+        ...args: Args
     ) => {
-        return function <Target extends {[key in Prop]: T}, Prop extends keyof Target>(
+        return function <Target extends {[key in Prop]: Dep}, Prop extends keyof Target>(
             target: Target,
             property: Prop,
         ): void {
-            define(target, property, container, token, tags, ...injectedArgs);
+            define(target, property, container, token, tags, ...args);
         };
     };
 }
