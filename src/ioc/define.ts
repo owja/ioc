@@ -14,7 +14,7 @@ export function define<
     container: Container,
     token: Token<Dep, Args> | MaybeToken<Dep>,
     tags: symbol[] | symbol,
-    ...args: Args
+    args: Args,
 ) {
     Object.defineProperty(target, property, {
         get: function <R>(this: R): Dep {

@@ -12,7 +12,7 @@ export function createDecorator(container: Container) {
             target: Target,
             property: Prop,
         ): void {
-            define(target, property, container, token, tags, ...args);
+            define(target, property, container, token, tags, args);
         };
     };
 }

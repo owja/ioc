@@ -10,6 +10,6 @@ export function createWire(container: Container) {
         tags: symbol[] | symbol = [],
         ...args: Args
     ) => {
-        define(target, property, container, token, tags, ...args);
+        define(target, property, container, token, tags, args);
     };
 }
