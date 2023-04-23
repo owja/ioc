@@ -1,5 +1,6 @@
 import {Container} from "./container";
 import {token} from "./token";
+import {NewAble} from "./types";
 
 describe("Container using symbols", () => {
     let container: Container;
@@ -138,6 +139,17 @@ describe("Container using symbols", () => {
     test("can bind a negative constant value", () => {
         container.bind<number>(exampleSymbol).toValue(-10);
         expect(container.get<string>(exampleSymbol)).toBe(-10);
+    });
+
+    test("can bind a function value", () => {
+        container.bind<(str: string) => string>(exampleSymbol).toValue((str: string) => "hello " + str);
+        expect(container.get<(str: string) => string>(exampleSymbol)("world")).toBe("hello world");
+    });
+
+    test("can bind a constructable value", () => {
+        class HelloWorld {}
+        container.bind<NewAble<HelloWorld, never>>(exampleSymbol).toValue(HelloWorld);
+        expect(new (container.get<NewAble<HelloWorld, never>>(exampleSymbol))()).toBeInstanceOf(HelloWorld);
     });
 
     test("can bind a constant value of empty string", () => {

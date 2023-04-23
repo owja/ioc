@@ -1,5 +1,5 @@
 export {Container} from "./ioc/container";
-export type {Plugin, Factory, Item, NewAble, Token, Value} from "./ioc/types";
+export type {Plugin, Factory, RegItem, NewAble, Token, Value} from "./ioc/types";
 export {createDecorator} from "./ioc/createDecorator";
 export {createWire} from "./ioc/createWire";
 export {createResolve} from "./ioc/createResolve";

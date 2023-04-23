@@ -1,36 +1,35 @@
 import type {Container} from "./container";
 
-// container
-export type Injected<T> = Factory<T> | Value<T>;
-export interface Item<T> {
-    injected?: Injected<T>;
-    cache?: T;
+export interface RegItem<Dep = unknown, Args extends Array<unknown> = []> {
+    value?: Value<Dep>;
+    factory?: Factory<Dep, Args>;
+    cache?: Dep;
     singleton?: boolean;
-    plugins: Plugin<T>[];
+    plugins: Plugin<Dep>[];
 }
 
-export type Plugin<Dependency = unknown> = (
-    dependency: Dependency,
+export type Plugin<Dep = unknown> = (
+    dependency: Dep,
     target: unknown,
     tags: symbol[],
-    token: MaybeToken<Dependency>,
+    token: MaybeToken<Dep>,
     container: Container,
 ) => void;
 
-export interface NewAble<T> {
-    new (...ctorArgs: any[]): T;
+export interface NewAble<Dep, Args extends Array<unknown>> {
+    new (...args: Args): Dep;
 }
 
-export type Factory<T, U extends Array<unknown> = any> = (...factoryArgs: U) => T;
-export type Value<T> = T;
+export type Factory<Dep, Args extends Array<unknown>> = (...args: Args) => Dep;
+export type Value<Dependency> = Dependency;
 
 // tokens
-export type MaybeToken<T = unknown, U extends Array<unknown> = unknown[]> = Token<T, U> | symbol;
+export type MaybeToken<Dep = unknown, Args extends Array<unknown> = unknown[]> = Token<Dep, Args> | symbol;
 
-declare const typeMarker: unique symbol;
-declare const bindedArguments: unique symbol;
-export interface Token<T, U extends Array<unknown>> {
+declare const dependencyMarker: unique symbol;
+declare const argumentsMarker: unique symbol;
+export interface Token<Dep, Args extends Array<unknown> = never> {
     type: symbol;
-    [typeMarker]: T;
-    [bindedArguments]: U;
+    [dependencyMarker]: Dep;
+    [argumentsMarker]: Args;
 }
