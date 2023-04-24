@@ -1,8 +1,10 @@
 # @owja/ioc
 
-[![npm version](https://img.shields.io/npm/v/@owja/ioc.svg)](https://badge.fury.io/js/%40owja%2Fioc)
+[![npm version](https://img.shields.io/npm/v/@owja/ioc/latest)](https://badge.fury.io/js/%40owja%2Fioc)
+[![npm version](https://img.shields.io/npm/v/@owja/ioc/next)](https://badge.fury.io/js/%40owja%2Fioc)
 [![size](https://img.badgesize.io/https://unpkg.com/@owja/ioc/dist/ioc.js.svg?compression=brotli&label=size&v=1)](https://unpkg.com/@owja/ioc/dist/ioc.js)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/owja/ioc/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/owja/ioc/tree/master)
+![npm](https://img.shields.io/npm/dm/@owja/ioc)
 
 This library implements dependency injection for javascript and typescript.
 
