@@ -1,6 +1,6 @@
 {
   "name": "@owja/ioc",
-  "version": "2.0.0-alpha.7",
+  "version": "2.0.0-alpha.8",
   "description": "dependency injection for javascript",
   "main": "dist/ioc.js",
   "module": "dist/ioc.mjs",
@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "module": "./dist/ioc.mjs",
       "import": "./dist/ioc.mjs",
       "require": "./dist/ioc.js"
