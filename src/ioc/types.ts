@@ -16,7 +16,7 @@ export type Plugin<Dep = unknown> = (
     container: Container,
 ) => void;
 
-export interface NewAble<Dep, Args extends Array<unknown>> {
+export interface NewAble<Dep, Args extends Array<unknown> = []> {
     new (...args: Args): Dep;
 }
 

@@ -148,8 +148,8 @@ describe("Container using symbols", () => {
 
     test("can bind a constructable value", () => {
         class HelloWorld {}
-        container.bind<NewAble<HelloWorld, never>>(exampleSymbol).toValue(HelloWorld);
-        expect(new (container.get<NewAble<HelloWorld, never>>(exampleSymbol))()).toBeInstanceOf(HelloWorld);
+        container.bind<NewAble<HelloWorld>>(exampleSymbol).toValue(HelloWorld);
+        expect(new (container.get<NewAble<HelloWorld>>(exampleSymbol))()).toBeInstanceOf(HelloWorld);
     });
 
     test("can bind a constant value of empty string", () => {
