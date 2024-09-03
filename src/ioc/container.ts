@@ -46,9 +46,11 @@ export class Container {
 
         const value: Dep = item.factory
             ? !item.singleton
-                ? item.factory(...((args || []) as any))
-                : (item.cache = item.cache || item.factory(...((args || []) as any)))
-            : item.value!; // eslint-disable-line
+                ? // eslint-disable-next-line
+                  item.factory(...((args || []) as any))
+                : // eslint-disable-next-line
+                  (item.cache = item.cache || item.factory(...((args || []) as any)))
+            : item.value!;
 
         const tagsArr = valueOrArrayToArray(tags);
 

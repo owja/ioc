@@ -5,7 +5,10 @@ import {token} from "./token";
 import {createResolve} from "./createResolve";
 
 class WithArguments {
-    constructor(public a: number, public b: number) {}
+    constructor(
+        public a: number,
+        public b: number,
+    ) {}
 }
 class WithoutArguments {
     public a: number;

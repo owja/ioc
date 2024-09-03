@@ -29,10 +29,10 @@
     "build": "microbundle --format es,cjs",
     "clean": "shx rm -rf dist && shx rm -f owja-ioc-*.tgz && shx rm -rf coverage",
     "test": "jest",
-    "lint": "eslint --ext .ts ./src",
-    "lint:fix": "eslint --ext .ts ./src --fix",
-    "prettier": "prettier src/**/*.ts *.js --check",
-    "prettier:fix": "prettier src/**/*.ts *.js --write"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "prettier": "prettier src/**/*.ts *.js *.mjs --check",
+    "prettier:fix": "prettier src/**/*.ts *.js *.mjs --write"
   },
   "repository": {
     "type": "git",
@@ -48,15 +48,16 @@
     "@owja/browserslist-config": "^1.0.1",
     "@owja/prettier-config": "^1.0.2",
     "@owja/typescript-config": "^1.0.2",
-    "@types/jest": "^28.1.7",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
-    "eslint": "^8.15.0",
-    "eslint-plugin-jest": "^26.2.2",
-    "jest": "^28.1.0",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^8.4.0",
+    "@typescript-eslint/parser": "^8.4.0",
+    "eslint": "^9.9.1",
+    "eslint-plugin-jest": "^28.8.2",
+    "jest": "^29.7.0",
     "microbundle": "^0.15.0",
     "shx": "^0.3.4",
-    "ts-jest": "^28.0.2"
+    "ts-jest": "^29.2.5",
+    "typescript-eslint": "^8.4.0"
   },
   "mangle": {
     "regex": "^_"

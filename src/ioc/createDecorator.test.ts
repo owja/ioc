@@ -58,7 +58,10 @@ class ChildWithCtorArg implements ITestClass {
 
 type twoArgsITestClass = ITestClass & {name2: string};
 class With2CtorArgs implements twoArgsITestClass {
-    constructor(public name: string, public name2: string) {}
+    constructor(
+        public name: string,
+        public name2: string,
+    ) {}
 }
 
 class ChildWith2CtorArgs implements ITestClass {

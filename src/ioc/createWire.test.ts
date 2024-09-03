@@ -17,7 +17,10 @@ class OneArg {
 }
 
 class TwoArgs {
-    constructor(public name: string, public name2: string) {}
+    constructor(
+        public name: string,
+        public name2: string,
+    ) {}
 }
 
 const container = new Container();
